@@ -140,6 +140,24 @@
   tr.allcat td{background:#EEF1F4;font-weight:700;border-top:2px solid var(--line);border-bottom:1px solid var(--line)}
   tr.allcat:hover td{background:#E6EAEF}
   td.allitem{padding-left:24px}
+  /* channel chart */
+  .chartwrap{position:relative;padding:8px 4px 4px}
+  .chartwrap svg{width:100%;height:auto;display:block;overflow:visible}
+  .chartwrap svg rect.seg{transition:opacity .12s}
+  .chartwrap.hovering svg rect.seg{opacity:.28}
+  .chartwrap.hovering svg rect.seg.hl{opacity:1;stroke:var(--ink);stroke-width:1.2}
+  .charttip{position:absolute;pointer-events:none;background:var(--ink);color:#fff;border-radius:8px;
+            padding:8px 11px;font-size:12px;box-shadow:var(--shadow);opacity:0;transition:opacity .1s;z-index:5;white-space:nowrap}
+  .charttip.show{opacity:1}
+  .charttip .ctc{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;vertical-align:1px}
+  .charttip .ctv{font-family:var(--mono);font-weight:700}
+  .charttip .ctm{color:#c2c7d0;font-size:11px}
+  .chartaxis text{font-size:10.5px;fill:var(--muted);font-family:var(--sans)}
+  .chartaxis line{stroke:var(--line-2)}
+  .chlegend{display:flex;flex-wrap:wrap;gap:6px;padding:14px 4px 4px}
+  .chip.leg{cursor:pointer}
+  .chip.leg .sw{width:10px;height:10px;border-radius:3px;display:inline-block}
+  .chip.leg.off{opacity:.4;text-decoration:line-through}
   body.editmode tr[data-id] .rowlbl{cursor:pointer}
   body.editmode tr[data-id] .rowlbl:hover .p{text-decoration:underline dotted;text-underline-offset:2px}
   .catrow{cursor:pointer}
@@ -392,10 +410,18 @@ const SB_DEFAULT={
 };
 const STATUSES=['spent','committed','intended'];
 const SLABEL={spent:'Spent',committed:'Committed',intended:'Intended'};
+const CATCOLORS={
+  'TV':'#2F6DB5','TV PRODUCTION':'#7FA9DD','RADIO':'#E8963A','OOH':'#C0504D',
+  'DIGITAL PARTNERS':'#4EA72E','SOCIAL':'#8E5FB0','SEM':'#0E7C66','PROGRAMMATIC':'#D4A017',
+  'AMBASSADORS':'#D45B8B','SOCIAL MEDIA CREATORS':'#12A5A5','AGENCIES':'#6C63D8','EVENTS':'#B9791C',
+  'ADTECH / MARTECH':'#5A6B90','CONTRACTORS':'#9C6B3F','AUSMERICAN ACES':'#3AA0FF','FOXCATCHER':'#E4572E',
+  'STATMATE':'#6AA84F'
+};
 
 let state=null, view='overview', filter='all', query='', mode='view', collapsed=false;
 let selection=new Set(), selectMode=false, visIds=[], dragging=false, dragAnchor=null, moved=false, lastClicked=null;
 let selCats=new Set(CATS);   // overview category multi-select
+let hiddenChannels=new Set();// channel chart show/hide
 
 /* ---------- persistence ---------- */
 function freshFromSeed(){ return JSON.parse(JSON.stringify(SEED)); }
@@ -533,6 +559,8 @@ function renderNav(){
       +'<span class="navname">Overview</span><span class="navval">'+fmtShort(grand.total)+'</span></button>';
   h+='<button class="navitem '+(view==='all'?'active':'')+'" data-view="all">'
       +'<span class="navname">All categories</span><span class="navval">'+fmtShort(grand.total)+'</span></button>';
+  h+='<button class="navitem '+(view==='channels'?'active':'')+'" data-view="channels">'
+      +'<span class="navname">Spend by channel</span><span class="navval">chart</span></button>';
   h+='<div class="grouplbl">Categories</div>';
   CATS.forEach(cat=>{
     const t=totalsFor(catItems(cat)).total;
@@ -545,7 +573,7 @@ function renderNav(){
 function titlecase(s){ return s.replace(/\w\S*/g,w=>w[0].toUpperCase()+w.slice(1).toLowerCase()).replace(/ And /g,' & ').replace('Ooh','OOH').replace('Tv','TV').replace('Sem','SEM').replace('Statmate','StatMate'); }
 
 /* ============================ RENDER ROUTER ============================ */
-function render(){ renderNav(); (view==='overview'?renderOverview():view==='all'?renderAll():renderCategory(view)); }
+function render(){ renderNav(); (view==='overview'?renderOverview():view==='all'?renderAll():view==='channels'?renderChannels():renderCategory(view)); }
 function setView(v){ view=v; selection.clear(); render(); window.scrollTo(0,0); }
 
 /* ============================ ALL CATEGORIES (consolidated ledger) ============================ */
@@ -765,6 +793,112 @@ function minibar(t){
 }
 
 /* ============================ CATEGORY DETAIL ============================ */
+/* ============================ SPEND BY CHANNEL (chart) ============================ */
+function niceCeil(v){ if(v<=0) return 1; const p=Math.pow(10,Math.floor(Math.log10(v))); const n=v/p;
+  const step=n<=1?1:n<=1.5?1.5:n<=2?2:n<=2.5?2.5:n<=5?5:10; return step*p; }
+function channelMatrix(){
+  const focus=filter, data={};
+  CATS.forEach(cat=>data[cat]=Array(12).fill(0));
+  state.items.forEach(it=>it.cells.forEach((cell,mi)=>{ if(focus==='all'||cell[1]===focus) data[it.cat][mi]+=cell[0]||0; }));
+  return data;
+}
+function renderChannels(){
+  const c=document.getElementById('content');
+  const focus=filter;
+  const data=channelMatrix();
+  const shown=CATS.filter(cat=>!hiddenChannels.has(cat));
+  const monthTotals=MONTHS.map((_,mi)=>shown.reduce((s,cat)=>s+data[cat][mi],0));
+  const niceMax=niceCeil(Math.max(1,...monthTotals));
+
+  // layout
+  const W=920,H=460,L=66,R=18,T=18,B=54, pw=W-L-R, ph=H-T-B;
+  const gw=pw/12, bw=Math.min(46,gw*0.62);
+  const y=v=>T+ph-(v/niceMax)*ph;
+  let svg='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Spend by channel by month">';
+  // gridlines + y labels
+  svg+='<g class="chartaxis">';
+  const steps=5;
+  for(let i=0;i<=steps;i++){ const val=niceMax*i/steps; const yy=y(val);
+    svg+='<line x1="'+L+'" y1="'+yy+'" x2="'+(W-R)+'" y2="'+yy+'"/>';
+    svg+='<text x="'+(L-8)+'" y="'+(yy+3.5)+'" text-anchor="end">'+fmtShort(val)+'</text>'; }
+  svg+='</g>';
+  // bars
+  MONTHS.forEach((m,mi)=>{
+    const x0=L+mi*gw+(gw-bw)/2;
+    let cy=T+ph;
+    shown.forEach(cat=>{
+      const v=data[cat][mi]; if(v<=0) return;
+      const segH=(v/niceMax)*ph; cy-=segH;
+      svg+='<rect class="seg" x="'+x0.toFixed(1)+'" y="'+cy.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+segH.toFixed(1)
+        +'" rx="1.5" fill="'+CATCOLORS[cat]+'" data-cat="'+esc(cat)+'" data-mi="'+mi+'" data-val="'+v+'"></rect>';
+    });
+    svg+='<text class="chartaxis" x="'+(L+mi*gw+gw/2)+'" y="'+(T+ph+18)+'" text-anchor="middle" style="font-size:10.5px;fill:var(--muted)">'+m+'</text>';
+  });
+  svg+='</svg>';
+
+  const noteScope=focus==='all'?'all spend':SLABEL[focus]+' only';
+  let h='<div class="panel"><div class="panel-h"><h2>Spend by channel</h2><div class="hgroup">'
+    +'<span class="sub">Monthly spend stacked by channel · '+noteScope+' · hover a segment</span>'
+    +'<button class="btn" data-xexport="channels">⬇ Excel</button></div></div>'
+    +'<div class="chartwrap" id="chartwrap">'+svg+'<div class="charttip" id="charttip"></div></div>'
+    +'<div class="chlegend">';
+  CATS.forEach(cat=>{
+    const tot=data[cat].reduce((s,v)=>s+v,0);
+    h+='<button class="chip leg'+(hiddenChannels.has(cat)?' off':'')+'" data-ch="'+esc(cat)+'">'
+      +'<span class="sw" style="background:'+CATCOLORS[cat]+'"></span>'+esc(titlecase(cat))
+      +' <span class="cv">'+fmtShort(tot)+'</span></button>';
+  });
+  h+='</div></div>';
+  c.innerHTML=h;
+
+  // legend toggles
+  c.querySelectorAll('.chip.leg').forEach(b=>b.onclick=()=>{
+    const cat=b.dataset.ch; hiddenChannels.has(cat)?hiddenChannels.delete(cat):hiddenChannels.add(cat); renderChannels();
+  });
+  const xb=c.querySelector('[data-xexport="channels"]'); if(xb) xb.onclick=exportChannelsXlsx;
+
+  // hover tooltip
+  const wrap=c.querySelector('#chartwrap'), tip=c.querySelector('#charttip'), svgEl=wrap.querySelector('svg');
+  function segFrom(e){ return e.target.closest && e.target.closest('rect.seg'); }
+  svgEl.addEventListener('mousemove',e=>{
+    const seg=segFrom(e);
+    if(!seg){ wrap.classList.remove('hovering'); tip.classList.remove('show'); wrap.querySelectorAll('rect.hl').forEach(r=>r.classList.remove('hl')); return; }
+    wrap.classList.add('hovering');
+    wrap.querySelectorAll('rect.hl').forEach(r=>r.classList.remove('hl')); seg.classList.add('hl');
+    const cat=seg.dataset.cat, mi=+seg.dataset.mi, val=+seg.dataset.val;
+    tip.innerHTML='<span class="ctc" style="background:'+CATCOLORS[cat]+'"></span>'+esc(titlecase(cat))
+      +'<div class="ctm">'+MONTHS[mi]+'</div><div class="ctv">'+fmt(val)+'</div>';
+    tip.classList.add('show');
+    const r=wrap.getBoundingClientRect();
+    let x=e.clientX-r.left+12, ty=e.clientY-r.top+12;
+    if(x+150>r.width) x=e.clientX-r.left-150;
+    tip.style.left=x+'px'; tip.style.top=ty+'px';
+  });
+  svgEl.addEventListener('mouseleave',()=>{ wrap.classList.remove('hovering'); tip.classList.remove('show'); wrap.querySelectorAll('rect.hl').forEach(r=>r.classList.remove('hl')); });
+}
+async function exportChannelsXlsx(){
+  if(!xready()){ toast('Excel library offline — exporting CSV'); return exportCsv(); }
+  const data=channelMatrix();
+  const wb=new ExcelJS.Workbook(); wb.creator='PBA Marketing Budget';
+  const ws=wb.addWorksheet('Spend by channel');
+  ws.columns=[{width:26}].concat(MONTHS.map(()=>({width:11}))).concat([{width:14}]);
+  xTitle(ws,'PointsBet Marketing Budget · Spend by channel · JPFY27'+(filter!=='all'?' ('+SLABEL[filter]+')':''),14);
+  const hdr=ws.addRow(['Channel'].concat(MONTHS).concat(['Total'])); xHeaderRow(hdr);
+  CATS.forEach(cat=>{
+    const row=data[cat]; const tot=row.reduce((s,v)=>s+v,0);
+    const r=ws.addRow([titlecase(cat)].concat(row).concat([tot]));
+    r.getCell(1).font=xfont({bold:true});
+    for(let m=0;m<12;m++){ r.getCell(2+m).numFmt=XMONEY; r.getCell(2+m).alignment={horizontal:'right'}; }
+    xMoney(r.getCell(14),true);
+  });
+  const tr=ws.addRow(['Total'].concat(MONTHS.map((_,mi)=>CATS.reduce((s,cat)=>s+data[cat][mi],0))).concat([CATS.reduce((s,cat)=>s+data[cat].reduce((a,v)=>a+v,0),0)]));
+  tr.eachCell(cc=>{ cc.font=xfont({bold:true}); cc.border={top:{style:'medium',color:{argb:XLINE}}}; });
+  for(let m=0;m<12;m++){ tr.getCell(2+m).numFmt=XMONEY; tr.getCell(2+m).alignment={horizontal:'right'}; }
+  tr.getCell(14).numFmt=XMONEY; tr.getCell(14).alignment={horizontal:'right'};
+  ws.views=[{state:'frozen',xSplit:1,ySplit:3}];
+  await xSave(wb,xName('Spend_by_Channel')); toast('Spend by channel exported to Excel');
+}
+
 function renderCategory(cat){
   const c=document.getElementById('content');
   let items=catItems(cat).filter(matches);
