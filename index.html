@@ -136,6 +136,10 @@
   tr.subtotal td{border-top:1px solid var(--line);border-bottom:2px solid var(--line);
                  background:#FAFBFC;font-weight:700}
   tr.subtotal td:first-child{font-weight:700}
+  tr.allcat{cursor:pointer}
+  tr.allcat td{background:#EEF1F4;font-weight:700;border-top:2px solid var(--line);border-bottom:1px solid var(--line)}
+  tr.allcat:hover td{background:#E6EAEF}
+  td.allitem{padding-left:24px}
   .catrow{cursor:pointer}
   .catrow:hover{background:var(--line-2)!important}
   .minibar{display:inline-flex;height:8px;width:120px;border-radius:4px;overflow:hidden;background:var(--line-2);vertical-align:middle}
@@ -519,6 +523,8 @@ function renderNav(){
   const grand=totalsFor(state.items);
   let h='<button class="navitem '+(view==='overview'?'active':'')+'" data-view="overview">'
       +'<span class="navname">Overview</span><span class="navval">'+fmtShort(grand.total)+'</span></button>';
+  h+='<button class="navitem '+(view==='all'?'active':'')+'" data-view="all">'
+      +'<span class="navname">All categories</span><span class="navval">'+fmtShort(grand.total)+'</span></button>';
   h+='<div class="grouplbl">Categories</div>';
   CATS.forEach(cat=>{
     const t=totalsFor(catItems(cat)).total;
@@ -531,8 +537,93 @@ function renderNav(){
 function titlecase(s){ return s.replace(/\w\S*/g,w=>w[0].toUpperCase()+w.slice(1).toLowerCase()).replace(/ And /g,' & ').replace('Ooh','OOH').replace('Tv','TV').replace('Sem','SEM').replace('Statmate','StatMate'); }
 
 /* ============================ RENDER ROUTER ============================ */
-function render(){ renderNav(); (view==='overview'?renderOverview():renderCategory(view)); }
+function render(){ renderNav(); (view==='overview'?renderOverview():view==='all'?renderAll():renderCategory(view)); }
 function setView(v){ view=v; selection.clear(); render(); window.scrollTo(0,0); }
+
+/* ============================ ALL CATEGORIES (consolidated ledger) ============================ */
+function renderAll(){
+  const c=document.getElementById('content');
+  const q=query;
+  let h='<div class="panel"><div class="panel-h"><h2>All categories</h2><div class="hgroup">';
+  if(mode==='edit') h+='<button class="btn '+(selectMode?'on':'')+'" id="selmode">'+(selectMode?'Selecting ✓':'Select cells')+'</button>';
+  else h+='<span class="sub">Switch to Edit to change figures</span>';
+  h+='<button class="btn" data-xexport="all">⬇ Excel</button></div></div><div class="scroll"><table>';
+  h+='<thead><tr><th>Category / line item</th><th>Code</th>'
+    +(collapsed?'':MONTHS.map((m,i)=>'<th class="month">'+m+'</th>').join(''))
+    +'<th class="tot">Total</th></tr></thead><tbody>';
+  visIds=[];
+  let anyShown=false;
+  CATS.forEach(cat=>{
+    const list=catItems(cat).filter(matches);
+    if(!list.length) return;
+    anyShown=true;
+    const ct=totalsFor(list);
+    h+='<tr class="allcat" data-cat="'+esc(cat)+'"><td class="rowlbl"><span class="p">'+esc(titlecase(cat))+'</span></td><td></td>';
+    if(!collapsed) ct.months.forEach(m=> h+='<td class="num">'+(m?fmtShort(m):'<span style="color:var(--faint)">–</span>')+'</td>');
+    h+='<td class="tot">'+fmt(ct.total)+'</td></tr>';
+    list.forEach(it=>{
+      visIds.push(it.id);
+      h+='<tr data-id="'+it.id+'"><td class="rowlbl allitem"><span class="p" style="font-weight:600">'+esc(it.partner)+'</span></td>'
+        +'<td class="meta">'+esc(it.code)+'</td>';
+      if(!collapsed) it.cells.forEach((cell,mi)=>{
+        const a=cell[0]||0, st=cell[1];
+        const dim=(filter!=='all'&&st!==filter)?' dim':'';
+        h+='<td class="cell '+st+dim+'" data-id="'+it.id+'" data-mi="'+mi+'"><span class="amt'+(a===0?' zero':'')+'">'+(a===0?'–':AUD.format(a))+'</span></td>';
+      });
+      h+='<td class="tot">'+fmt(itemTotal(it))+'</td></tr>';
+    });
+  });
+  const g=totalsFor(state.items.filter(matches));
+  h+='<tr class="subtotal"><td>Grand total'+(q?' (filtered)':'')+'</td><td></td>'
+    +(collapsed?'':g.months.map(m=>'<td class="num">'+fmtShort(m)+'</td>').join(''))
+    +'<td class="tot">'+fmt(g.total)+'</td></tr>';
+  h+='</tbody></table></div></div>';
+  if(!anyShown) h='<div class="panel"><div style="padding:44px;text-align:center;color:var(--muted)">No line items match “'+esc(q)+'”.</div></div>';
+  c.innerHTML=h;
+
+  const xa=c.querySelector('[data-xexport="all"]'); if(xa) xa.onclick=exportAllXlsx;
+  c.querySelectorAll('.allcat').forEach(r=>r.onclick=()=>setView(r.dataset.cat));
+  if(mode==='edit'){
+    c.querySelectorAll('td.cell').forEach(td=>{
+      td.addEventListener('mousedown',onCellDown);
+      td.addEventListener('mouseenter',onCellEnter);
+      td.addEventListener('touchstart',onCellTouch,{passive:true});
+    });
+    const sm=document.getElementById('selmode'); if(sm) sm.onclick=()=>{selectMode=!selectMode; selection.clear(); renderAll();};
+    paintSel();
+  }
+}
+async function exportAllXlsx(){
+  if(!xready()){ toast('Excel library offline — exporting CSV'); return exportCsv(); }
+  const wb=new ExcelJS.Workbook(); wb.creator='PBA Marketing Budget';
+  const ws=wb.addWorksheet('ACTUALS OVERVIEW');
+  ws.columns=[{width:32},{width:11}].concat(MONTHS.map(()=>({width:11}))).concat([{width:14}]);
+  xTitle(ws,'PointsBet Marketing Budget · All categories · JPFY27',15);
+  const hdr=ws.addRow(['Category / line item','Code'].concat(MONTHS).concat(['Total'])); xHeaderRow(hdr);
+  CATS.forEach(cat=>{
+    const items=catItems(cat); if(!items.length) return;
+    const ct=totalsFor(items);
+    const cr=ws.addRow([titlecase(cat),''].concat(ct.months).concat([ct.total]));
+    cr.eachCell(c=>{ c.font=xfont({bold:true}); c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FFEDEFF2'}}; });
+    for(let m=0;m<12;m++){ cr.getCell(3+m).numFmt=XMONEY; cr.getCell(3+m).alignment={horizontal:'right'}; }
+    cr.getCell(15).numFmt=XMONEY; cr.getCell(15).alignment={horizontal:'right'};
+    items.forEach(it=>{
+      const r=ws.addRow(['    '+it.partner,it.code].concat(it.cells.map(c=>c[0])).concat([itemTotal(it)]));
+      r.getCell(2).font=xfont({size:10,color:{argb:XMUTE}});
+      for(let m=0;m<12;m++){ const cell=r.getCell(3+m); const st=it.cells[m][1]; cell.numFmt=XMONEY; cell.alignment={horizontal:'right'};
+        if(it.cells[m][0]){ cell.fill={type:'pattern',pattern:'solid',fgColor:{argb:XSTYLE[st].fill}}; cell.font=xfont({color:{argb:XSTYLE[st].font}}); }
+        else cell.font=xfont({color:{argb:XFAINT}}); }
+      xMoney(r.getCell(15),true);
+    });
+  });
+  const g=totalsFor(state.items);
+  const gt=ws.addRow(['Grand total',''].concat(g.months).concat([g.total]));
+  gt.eachCell(c=>{ c.font=xfont({bold:true}); c.border={top:{style:'medium',color:{argb:XLINE}}}; });
+  for(let m=0;m<12;m++){ gt.getCell(3+m).numFmt=XMONEY; gt.getCell(3+m).alignment={horizontal:'right'}; }
+  gt.getCell(15).numFmt=XMONEY; gt.getCell(15).alignment={horizontal:'right'};
+  ws.views=[{state:'frozen',xSplit:1,ySplit:3}];
+  await xSave(wb,xName('All_Categories')); toast('All categories exported to Excel');
+}
 
 /* ============================ OVERVIEW ============================ */
 function renderOverview(){
