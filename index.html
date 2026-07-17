@@ -384,6 +384,12 @@ const BUILT = "2026-07-17";
 "use strict";
 /* ============================ APP ============================ */
 const KEY='pba_budget_jpfy27_v3';
+// Baked-in shared database connection (public anon key; repo is public so this is already visible).
+const SB_DEFAULT={
+  url:'https://uboferpfurlnntryhrqv.supabase.co',
+  key:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVib2ZlcnBmdXJsbm50cnlocnF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyNDQwMjcsImV4cCI6MjA5OTgyMDAyN30.86bSZHjKPibpdCDfFZrv2BDDkbq51QSc61Y-NaP3wq4',
+  table:'budget_line_items'
+};
 const STATUSES=['spent','committed','intended'];
 const SLABEL={spent:'Spent',committed:'Committed',intended:'Intended'};
 
@@ -475,7 +481,7 @@ function subscribeRealtime(){
   }catch(e){}
 }
 function connectModal(){
-  const cfg=sbConfig()||{};
+  const cfg=sbConfig()||SB_DEFAULT;
   openModal('<h3>Connect to a SQL database</h3><p>Paste your Supabase project details. The anon key is a public key, safe to store here. Once connected, the budget lives in the database and everyone connected sees the same live figures.</p>'
     +'<label>Project URL</label><input id="su" placeholder="https://yourproject.supabase.co" value="'+esc(cfg.url||'')+'">'
     +'<label>Anon public key</label><input id="sk" placeholder="eyJhbGciOi…" value="'+esc(cfg.key||'')+'">'
@@ -1261,8 +1267,8 @@ function boot(){
   }
   render(); flashSaved();
 
-  // auto-connect to database if configured previously
-  const cfg=sbConfig();
+  // auto-connect to database (saved config, else the baked-in shared connection)
+  const cfg=sbConfig()||SB_DEFAULT;
   if(cfg&&cfg.url&&cfg.key){ syncChip('syncing'); connectDb(cfg,false); }
 
   document.getElementById('search').oninput=e=>{ query=e.target.value.trim(); if(view!=='overview') renderCategory(view); };
