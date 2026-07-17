@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PBA Marketing Budget — JPFY27</title>
+<style>
+  :root{
+    --ink:#16181D; --ink-2:#3A3F49; --muted:#7A8290; --faint:#AAB1BC;
+    --paper:#F5F6F8; --card:#FFFFFF; --line:#E4E7EC; --line-2:#EEF0F3;
+    --spent:#0E7C66; --spent-bg:#E3F1EC;
+    --committed:#B9791C; --committed-bg:#F7EEDD;
+    --intended:#5A6B90; --intended-bg:#E9EDF4;
+    --primary:#16181D; --danger:#B23A3A;
+    --radius:10px; --shadow:0 1px 2px rgba(20,22,26,.06),0 6px 20px rgba(20,22,26,.06);
+    --mono:Calibri,Carlito,Candara,"Segoe UI",system-ui,sans-serif;
+    --sans:Calibri,Carlito,Candara,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{font-family:var(--sans);color:var(--ink);background:var(--paper);
+       font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
+  .num{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+  button{font-family:inherit;cursor:pointer}
+  input{font-family:inherit}
+  a{color:inherit}
+
+  /* ---------- shell ---------- */
+  .app{display:grid;grid-template-columns:248px 1fr;min-height:100vh}
+  .side{background:var(--card);border-right:1px solid var(--line);
+        display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow:hidden}
+  .brand{padding:18px 18px 14px;border-bottom:1px solid var(--line)}
+  .brand .eyebrow{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .brand h1{font-size:16px;margin:5px 0 2px;font-weight:700;letter-spacing:-.01em}
+  .brand .fy{font-size:11px;color:var(--muted)}
+  .nav{overflow-y:auto;padding:8px 8px 16px;flex:1}
+  .nav .grouplbl{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);
+                 font-weight:600;padding:12px 10px 5px}
+  .navitem{display:flex;align-items:center;justify-content:space-between;gap:8px;
+           padding:7px 10px;border-radius:8px;font-size:12.5px;color:var(--ink-2);
+           border:0;background:none;width:100%;text-align:left;transition:background .12s}
+  .navitem:hover{background:var(--line-2)}
+  .navitem.active{background:var(--ink);color:#fff}
+  .navitem.active .navval{color:#cfd4dd}
+  .navitem .navname{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .navval{font-family:var(--mono);font-size:11px;color:var(--muted);flex-shrink:0}
+
+  /* ---------- top bar ---------- */
+  .main{min-width:0;display:flex;flex-direction:column}
+  .topbar{position:sticky;top:0;z-index:30;background:rgba(245,246,248,.86);
+          backdrop-filter:saturate(1.4) blur(8px);border-bottom:1px solid var(--line);
+          padding:12px 22px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .search{position:relative;flex:1;min-width:160px;max-width:340px}
+  .search input{width:100%;padding:8px 12px 8px 32px;border:1px solid var(--line);
+                border-radius:8px;background:var(--card);font-size:13px}
+  .search svg{position:absolute;left:10px;top:9px;color:var(--faint)}
+  .seg{display:inline-flex;background:var(--line-2);border-radius:8px;padding:3px}
+  .seg button{border:0;background:none;padding:6px 11px;border-radius:6px;font-size:12px;
+              color:var(--muted);font-weight:600;white-space:nowrap}
+  .seg button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+  .seg.status button.on[data-s="spent"]{color:var(--spent)}
+  .seg.status button.on[data-s="committed"]{color:var(--committed)}
+  .seg.status button.on[data-s="intended"]{color:var(--intended)}
+  .spacer{flex:1}
+  .btn{border:1px solid var(--line);background:var(--card);padding:8px 12px;border-radius:8px;
+       font-size:12.5px;font-weight:600;color:var(--ink-2);display:inline-flex;align-items:center;gap:6px}
+  .btn:hover{border-color:var(--faint)}
+  .btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .btn.primary:hover{background:#000}
+  .menu{position:relative}
+  .menu-pop{position:absolute;right:0;top:calc(100% + 6px);background:var(--card);
+            border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);
+            padding:6px;min-width:200px;display:none;z-index:40}
+  .menu-pop.open{display:block}
+  .menu-pop button{display:flex;width:100%;gap:8px;align-items:center;border:0;background:none;
+                   padding:9px 10px;border-radius:7px;font-size:12.5px;color:var(--ink-2);text-align:left}
+  .menu-pop button:hover{background:var(--line-2)}
+  .menu-pop hr{border:0;border-top:1px solid var(--line);margin:5px 4px}
+  .modebadge{font-size:11px;font-weight:700;padding:5px 9px;border-radius:20px;letter-spacing:.02em}
+  .modebadge.view{background:var(--intended-bg);color:var(--intended)}
+  .modebadge.edit{background:var(--spent-bg);color:var(--spent)}
+
+  /* ---------- content ---------- */
+  .content{padding:22px;max-width:1440px;width:100%}
+  .savechip{font-size:11px;color:var(--muted);display:inline-flex;align-items:center;gap:5px}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--spent)}
+
+  /* allocation bar / hero */
+  .hero{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+        padding:22px 24px;box-shadow:var(--shadow);margin-bottom:18px}
+  .hero-top{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
+  .hero-top .lbl{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .hero-total{font-family:var(--mono);font-size:38px;font-weight:600;letter-spacing:-.02em;margin-top:2px}
+  .hero-sub{font-size:12px;color:var(--muted)}
+  .allocbar{display:flex;height:38px;border-radius:8px;overflow:hidden;margin-top:18px;background:var(--line-2)}
+  .allocbar .seg-b{display:flex;align-items:center;padding:0 12px;color:#fff;font-size:12px;font-weight:600;
+                   min-width:0;transition:width .45s cubic-bezier(.4,0,.1,1);white-space:nowrap;overflow:hidden}
+  .allocbar .seg-b.spent{background:var(--spent)}
+  .allocbar .seg-b.committed{background:var(--committed)}
+  .allocbar .seg-b.intended{background:var(--intended)}
+  .legend{display:flex;gap:20px;margin-top:14px;flex-wrap:wrap}
+  .legend .lg{display:flex;align-items:center;gap:8px;font-size:12px}
+  .legend .sw{width:11px;height:11px;border-radius:3px}
+  .legend .lg .v{font-family:var(--mono);font-weight:600}
+  .legend .lg .p{color:var(--muted);font-family:var(--mono)}
+
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+  .kpi .k{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;
+          display:flex;align-items:center;gap:7px}
+  .kpi .v{font-family:var(--mono);font-size:24px;font-weight:600;margin-top:8px;letter-spacing:-.01em}
+  .kpi .s{font-size:11.5px;color:var(--muted);margin-top:3px;font-family:var(--mono)}
+  .kpi .swx{width:9px;height:9px;border-radius:3px}
+
+  /* tables */
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+         box-shadow:var(--shadow);overflow:hidden;margin-bottom:18px}
+  .panel-h{display:flex;align-items:center;justify-content:space-between;gap:12px;
+           padding:14px 18px;border-bottom:1px solid var(--line)}
+  .panel-h h2{font-size:14px;margin:0;font-weight:700;letter-spacing:-.01em}
+  .panel-h .sub{font-size:11.5px;color:var(--muted)}
+  .scroll{overflow-x:auto}
+  table{border-collapse:collapse;width:100%;font-size:12.5px}
+  th,td{padding:9px 10px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line-2)}
+  th:first-child,td:first-child{text-align:left}
+  thead th{position:sticky;top:0;background:var(--card);z-index:2;font-size:10.5px;
+           letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:600;
+           border-bottom:1px solid var(--line)}
+  thead th.month{cursor:default}
+  tbody tr:hover{background:#FAFBFC}
+  .rowlbl .p{font-weight:600;color:var(--ink)}
+  .rowlbl .meta{font-size:10.5px;color:var(--faint);font-family:var(--mono)}
+  td.tot,th.tot{font-family:var(--mono);font-weight:600}
+  tr.subtotal td{border-top:1px solid var(--line);border-bottom:2px solid var(--line);
+                 background:#FAFBFC;font-weight:700}
+  tr.subtotal td:first-child{font-weight:700}
+  .catrow{cursor:pointer}
+  .catrow:hover{background:var(--line-2)!important}
+  .minibar{display:inline-flex;height:8px;width:120px;border-radius:4px;overflow:hidden;background:var(--line-2);vertical-align:middle}
+  .minibar i{display:block;height:100%}
+  .minibar i.spent{background:var(--spent)}
+  .minibar i.committed{background:var(--committed)}
+  .minibar i.intended{background:var(--intended)}
+
+  /* editable cells */
+  td.cell{font-family:var(--mono);cursor:pointer;position:relative;border-left:2px solid transparent}
+  td.cell.spent{border-left-color:var(--spent);background:linear-gradient(0deg,var(--spent-bg),var(--spent-bg)) }
+  td.cell.committed{border-left-color:var(--committed)}
+  td.cell.intended{border-left-color:var(--intended)}
+  td.cell .amt.zero{color:var(--faint)}
+  td.cell.spent .amt{color:var(--spent)}
+  td.cell.committed .amt{color:var(--committed)}
+  td.cell.intended .amt{color:var(--intended)}
+  td.cell.dim{opacity:.18}
+  td.cell.sel{box-shadow:inset 0 0 0 2px var(--ink);border-radius:3px}
+  td.cell.sel .amt{font-weight:700}
+  body.editmode td.cell{user-select:none;-webkit-user-select:none}
+  body.viewmode td.cell{cursor:default}
+
+  .bulkbar{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(30px);
+           background:var(--ink);color:#fff;border-radius:12px;padding:8px 10px 8px 16px;
+           display:none;align-items:center;gap:12px;box-shadow:0 12px 40px rgba(0,0,0,.3);z-index:85}
+  .bulkbar.show{display:flex;transform:translateX(-50%) translateY(0);transition:all .2s}
+  .bulkbar .cnt{font-size:13px;font-weight:600;white-space:nowrap}
+  .bulkbar .grp{display:flex;gap:6px}
+  .bulkbar button{border:0;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700}
+  .bulkbar .sb[data-s="spent"]{background:var(--spent);color:#fff}
+  .bulkbar .sb[data-s="committed"]{background:var(--committed);color:#fff}
+  .bulkbar .sb[data-s="intended"]{background:var(--intended);color:#fff}
+  .bulkbar .ghost{background:rgba(255,255,255,.15);color:#fff}
+  .bulkbar .ghost:hover{background:rgba(255,255,255,.26)}
+  .btn.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .stag{display:inline-block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;
+        padding:1px 5px;border-radius:4px;margin-left:6px;vertical-align:1px}
+  .stag.spent{background:var(--spent-bg);color:var(--spent)}
+  .stag.committed{background:var(--committed-bg);color:var(--committed)}
+  .stag.intended{background:var(--intended-bg);color:var(--intended)}
+
+  .rowact{display:inline-flex;gap:4px;opacity:0;transition:opacity .12s}
+  tr:hover .rowact{opacity:1}
+  .iconbtn{border:1px solid var(--line);background:var(--card);border-radius:6px;width:26px;height:26px;
+           display:inline-grid;place-items:center;color:var(--muted)}
+  .iconbtn:hover{color:var(--ink);border-color:var(--faint)}
+  .iconbtn.sm{width:22px;height:22px}
+
+  /* cell editor popover */
+  .pop{position:fixed;z-index:80;background:var(--card);border:1px solid var(--line);border-radius:12px;
+       box-shadow:0 10px 40px rgba(20,22,26,.18);padding:14px;width:250px;display:none}
+  .pop.open{display:block}
+  .pop .plbl{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .pop .pctx{font-size:12px;color:var(--ink-2);margin:2px 0 10px}
+  .pop input.amtin{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;
+                   font-family:var(--mono);font-size:16px;font-weight:600;text-align:right}
+  .pop input.amtin:focus{outline:2px solid var(--ink);outline-offset:-1px}
+  .statuspick{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:10px}
+  .statuspick button{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:8px 4px;
+                     font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--muted)}
+  .statuspick button[data-s="spent"].on{background:var(--spent);border-color:var(--spent);color:#fff}
+  .statuspick button[data-s="committed"].on{background:var(--committed);border-color:var(--committed);color:#fff}
+  .statuspick button[data-s="intended"].on{background:var(--intended);border-color:var(--intended);color:#fff}
+  .pop .prow{display:flex;gap:8px;margin-top:12px}
+  .pop .prow .btn{flex:1;justify-content:center}
+
+  /* generic modal */
+  .scrim{position:fixed;inset:0;background:rgba(20,22,26,.42);z-index:70;display:none;align-items:center;justify-content:center;padding:20px}
+  .scrim.open{display:flex}
+  .modal{background:var(--card);border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.3);
+         width:100%;max-width:440px;padding:22px}
+  .modal h3{margin:0 0 4px;font-size:16px}
+  .modal p{margin:0 0 14px;color:var(--muted);font-size:13px}
+  .modal label{display:block;font-size:12px;font-weight:600;margin:10px 0 5px}
+  .modal input,.modal select{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;font-size:13px}
+  .modal .actions{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
+
+  /* toast */
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);
+         background:var(--ink);color:#fff;padding:11px 18px;border-radius:10px;font-size:13px;
+         box-shadow:var(--shadow);opacity:0;transition:all .25s;z-index:90;pointer-events:none}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  .hint{font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:7px;
+        padding:10px 14px;background:var(--intended-bg);border-radius:8px;margin-bottom:16px}
+  .hint b{color:var(--intended)}
+  .hint button{margin-left:auto;border:0;background:none;color:var(--intended);font-weight:600;text-decoration:underline}
+
+  /* overview category multi-select */
+  .ovbar{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+         padding:12px 14px;margin-bottom:16px;box-shadow:var(--shadow)}
+  .ovbar .ovhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+  .ovbar .ovhead .lbl{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .ovbar .ovhead .foc{font-size:12px;color:var(--muted)}
+  .ovbar .ovhead .foc b{color:var(--ink)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .chip{border:1px solid var(--line);background:var(--card);border-radius:20px;padding:6px 11px;
+        font-size:12px;font-weight:600;color:var(--ink-2);display:inline-flex;gap:6px;align-items:center;cursor:pointer;transition:all .12s}
+  .chip:hover{border-color:var(--faint)}
+  .chip .cv{font-family:var(--mono);color:var(--muted);font-weight:600;font-size:11px}
+  .chip.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .chip.active .cv{color:#cfd4dd}
+  .chip.spentf.active{background:var(--spent);border-color:var(--spent)}
+  .chip.committedf.active{background:var(--committed);border-color:var(--committed)}
+  .chip.intendedf.active{background:var(--intended);border-color:var(--intended)}
+  .chip.util{border-style:dashed;color:var(--muted);background:none}
+  .allocbar .seg-b.dim{opacity:.26}
+  .kpi.focus{box-shadow:inset 0 0 0 2px currentColor}
+  tr.dimrow{opacity:.34}
+  th.focuscol,td.focuscol{background:rgba(20,22,26,.035)}
+
+  .lockscreen{position:fixed;inset:0;background:var(--paper);z-index:100;display:none;
+              align-items:center;justify-content:center;flex-direction:column;gap:16px}
+  .lockscreen.open{display:flex}
+  .lockcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:28px;width:320px;text-align:center;box-shadow:var(--shadow)}
+  .lockcard h2{margin:6px 0 2px;font-size:18px}
+  .lockcard p{color:var(--muted);font-size:12.5px;margin:0 0 16px}
+
+  .menutoggle{display:none}
+  @media(max-width:940px){
+    .app{grid-template-columns:1fr}
+    .side{position:fixed;left:0;top:0;z-index:60;width:250px;transform:translateX(-100%);
+          transition:transform .2s;box-shadow:var(--shadow)}
+    .side.open{transform:none}
+    .menutoggle{display:inline-grid}
+    .kpis{grid-template-columns:1fr 1fr}
+    .hero-total{font-size:30px}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body class="viewmode">
+
+<div class="lockscreen" id="lockscreen">
+  <div class="lockcard">
+    <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600">PBA Marketing Budget</div>
+    <h2>Enter passcode</h2>
+    <p>This budget is passcode-protected on this device.</p>
+    <input type="password" id="lockinput" placeholder="Passcode" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;text-align:center;font-size:15px">
+    <div style="color:var(--danger);font-size:12px;height:16px;margin-top:6px" id="lockerr"></div>
+    <button class="btn primary" style="width:100%;justify-content:center;margin-top:8px" id="lockgo">Unlock</button>
+  </div>
+</div>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="side" id="side">
+    <div class="brand">
+      <div class="eyebrow">PointsBet Australia</div>
+      <h1>Marketing Budget</h1>
+      <div class="fy">JPFY27 · Apr 2026 – Mar 2027</div>
+    </div>
+    <nav class="nav" id="nav"></nav>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <button class="iconbtn menutoggle" id="menutoggle" aria-label="Menu">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+      <div class="search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+        <input id="search" placeholder="Search partner or code…">
+      </div>
+      <div class="seg status" id="statusfilter" title="Isolate a status">
+        <button data-s="all" class="on">All</button>
+        <button data-s="spent">Spent</button>
+        <button data-s="committed">Committed</button>
+        <button data-s="intended">Intended</button>
+      </div>
+      <div class="spacer"></div>
+      <span class="savechip" id="savechip"><span class="dot"></span> Saved</span>
+      <span class="modebadge view" id="modebadge">View</span>
+      <button class="btn" id="modebtn">Edit</button>
+      <div class="menu">
+        <button class="btn" id="morebtn">More ▾</button>
+        <div class="menu-pop" id="morepop">
+          <button data-act="connectdb">Connect database…</button>
+          <hr>
+          <button data-act="autotag">Auto-tag by month…</button>
+          <button data-act="collapse">Toggle all months / totals</button>
+          <hr>
+          <button data-act="expJson">Export data (.json)</button>
+          <button data-act="impJson">Import data (.json)</button>
+          <button data-act="expXlsx">Export to Excel (.xlsx)</button>
+          <button data-act="expCsv">Export to CSV</button>
+          <hr>
+          <button data-act="lock">Set / change passcode…</button>
+          <button data-act="reset">Reset to original figures</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="content" id="content"></div>
+  </div>
+</div>
+
+<!-- cell editor -->
+<div class="pop" id="pop">
+  <div class="plbl" id="poplbl">Edit cell</div>
+  <div class="pctx" id="popctx"></div>
+  <input class="amtin num" id="popamt" inputmode="numeric" placeholder="0">
+  <div class="statuspick">
+    <button data-s="spent">Spent</button>
+    <button data-s="committed">Committed</button>
+    <button data-s="intended">Intended</button>
+  </div>
+  <div class="prow">
+    <button class="btn" id="popcancel">Cancel</button>
+    <button class="btn primary" id="popsave">Save</button>
+  </div>
+</div>
+
+<!-- generic modal -->
+<div class="scrim" id="scrim"><div class="modal" id="modal"></div></div>
+<input type="file" id="fileinput" accept="application/json" style="display:none">
+<div class="bulkbar" id="bulkbar">
+  <span class="cnt" id="bulkcnt">0 selected</span>
+  <span class="grp">
+    <button class="sb" data-s="spent">Spent</button>
+    <button class="sb" data-s="committed">Committed</button>
+    <button class="sb" data-s="intended">Intended</button>
+  </span>
+  <button class="ghost" id="bulkamt">Set $…</button>
+  <button class="ghost" id="bulkclear">Clear</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const MONTHS = ["Apr 26", "May 26", "Jun 26", "Jul 26", "Aug 26", "Sep 26", "Oct 26", "Nov 26", "Dec 26", "Jan 27", "Feb 27", "Mar 27"];
+const CATS = ["TV", "TV PRODUCTION", "RADIO", "OOH", "DIGITAL PARTNERS", "SOCIAL", "SEM", "PROGRAMMATIC", "AMBASSADORS", "SOCIAL MEDIA CREATORS", "AGENCIES", "EVENTS", "ADTECH / MARTECH", "CONTRACTORS", "AUSMERICAN ACES", "FOXCATCHER", "STATMATE"];
+const SEED = {"items":[{"id":"ln1","cat":"TV","code":"64310","type":"Brand TV","partner":"Fox Footy TVCs","cells":[[177700,"spent"],[177950,"spent"],[213400,"spent"],[222550,"committed"],[193950,"committed"],[217350,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[194800,"intended"]]},{"id":"ln2","cat":"TV","code":"64310","type":"Brand TV","partner":"Fox Footy Integration","cells":[[123960,"spent"],[108090,"spent"],[103200,"spent"],[287000,"committed"],[280000,"committed"],[274150,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[103050,"intended"]]},{"id":"ln3","cat":"TV","code":"64310","type":"Brand TV","partner":"Footy Furance - Jam TV","cells":[[100000,"spent"],[0,"intended"],[0,"intended"],[50000,"committed"],[100000,"committed"],[0,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln4","cat":"TV","code":"64310","type":"Brand TV","partner":"ESPN(American Sports)","cells":[[160718,"spent"],[160718,"spent"],[160718,"spent"],[152500,"committed"],[152500,"committed"],[152500,"committed"],[152500,"committed"],[152500,"committed"],[152500,"committed"],[158333,"intended"],[160718,"intended"],[160718,"intended"]]},{"id":"ln5","cat":"TV","code":"64310","type":"Brand TV","partner":"FoxLeague (Package)","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln6","cat":"TV","code":"64310","type":"Brand TV","partner":"RDC","cells":[[83333,"spent"],[83333,"spent"],[83333,"spent"],[71000,"intended"],[75000,"intended"],[75000,"intended"],[75000,"intended"],[75000,"intended"],[75000,"intended"],[75000,"intended"],[75000,"intended"],[75000,"intended"]]},{"id":"ln7","cat":"TV","code":"64310","type":"Brand TV","partner":"contingency","cells":[[0,"spent"],[0,"spent"],[0,"spent"],[0,"spent"],[0,"spent"],[0,"spent"],[0,"spent"],[0,"spent"],[0,"spent"],[0,"spent"],[0,"spent"],[0,"spent"]]},{"id":"ln8","cat":"TV PRODUCTION","code":"64330","type":"Brand Acquisition Production (Incl Agency Fees)","partner":"FoxFooty Production","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[50000,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln9","cat":"TV PRODUCTION","code":"64330","type":"Brand Acquisition Production (Incl Agency Fees)","partner":"ESPN Production","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[40000,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln10","cat":"RADIO","code":"64320","type":"Brand Radio","partner":"Triple M - Brisbane Breakfast/Cricket","cells":[[20000,"spent"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln11","cat":"RADIO","code":"64320","type":"Brand Radio","partner":"Triple M - Sydney Breakfast","cells":[[26100,"spent"],[26100,"spent"],[26100,"spent"],[26100,"committed"],[26100,"committed"],[26100,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[26100,"intended"]]},{"id":"ln12","cat":"RADIO","code":"64320","type":"Brand Radio","partner":"SEN AFL Nation","cells":[[45000,"spent"],[35000,"spent"],[30125,"spent"],[25000,"committed"],[55000,"committed"],[35000,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln13","cat":"RADIO","code":"64320","type":"Brand Radio","partner":"Nine Radio Network","cells":[[0,"intended"],[55000,"spent"],[40000,"spent"],[40000,"committed"],[50000,"committed"],[50000,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln14","cat":"RADIO","code":"64320","type":"Brand Radio","partner":"SEN League (Sat Kickoff 2026)","cells":[[17500,"spent"],[17500,"spent"],[17500,"spent"],[17500,"committed"],[17500,"committed"],[17500,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln15","cat":"OOH","code":"64360","type":"Brand OOH & Print","partner":"QMS - DOOH","cells":[[15000,"spent"],[15000,"spent"],[15000,"spent"],[15000,"committed"],[15000,"committed"],[15000,"committed"],[15000,"intended"],[15000,"intended"],[15000,"intended"],[15000,"intended"],[15000,"intended"],[15000,"intended"]]},{"id":"ln16","cat":"OOH","code":"64360","type":"Brand OOH & Print","partner":"Motio - DOOH","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln17","cat":"DIGITAL PARTNERS","code":"64380","type":"Brand Digital & Display","partner":"Racing.com","cells":[[59625,"spent"],[71614,"spent"],[39214,"spent"],[14893,"intended"],[9652,"intended"],[12137,"intended"],[14823,"intended"],[13837,"intended"],[3009,"intended"],[11165,"intended"],[8214,"intended"],[11379,"intended"]]},{"id":"ln18","cat":"DIGITAL PARTNERS","code":"64380","type":"Brand Digital & Display","partner":"ESPN","cells":[[187500,"spent"],[187500,"spent"],[187500,"spent"],[187500,"committed"],[187500,"committed"],[187500,"committed"],[187500,"committed"],[187500,"committed"],[187500,"committed"],[187500,"committed"],[187500,"committed"],[187500,"committed"]]},{"id":"ln19","cat":"DIGITAL PARTNERS","code":"64380","type":"Brand Digital & Display","partner":"ESPN Footytips","cells":[[81662,"spent"],[81662,"spent"],[81662,"spent"],[81662,"committed"],[81662,"committed"],[81662,"committed"],[81662,"committed"],[81662,"committed"],[81662,"committed"],[81662,"committed"],[81662,"committed"],[81662,"committed"]]},{"id":"ln20","cat":"DIGITAL PARTNERS","code":"64380","type":"Brand Digital & Display","partner":"Fox League.com","cells":[[70000,"spent"],[70000,"spent"],[75000,"spent"],[70000,"committed"],[70000,"committed"],[60000,"committed"],[5000,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[80000,"intended"]]},{"id":"ln21","cat":"DIGITAL PARTNERS","code":"64380","type":"Brand Digital & Display","partner":"Fox League Social","cells":[[70000,"spent"],[70000,"spent"],[70000,"spent"],[70000,"committed"],[70000,"committed"],[70000,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[80000,"intended"]]},{"id":"ln22","cat":"DIGITAL PARTNERS","code":"64380","type":"Brand Digital & Display","partner":"Fox Footy Streaming","cells":[[200000,"spent"],[200000,"spent"],[200000,"spent"],[200000,"committed"],[200000,"committed"],[200000,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[200000,"intended"]]},{"id":"ln23","cat":"DIGITAL PARTNERS","code":"64380","type":"Brand Digital & Display","partner":"Fox Footy.com","cells":[[70000,"spent"],[70000,"spent"],[70000,"spent"],[70000,"committed"],[70000,"committed"],[70000,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[80000,"intended"]]},{"id":"ln24","cat":"DIGITAL PARTNERS","code":"64380","type":"Brand Digital & Display","partner":"Fox Footy Social","cells":[[65000,"spent"],[65000,"spent"],[65000,"spent"],[65000,"committed"],[65000,"committed"],[65000,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[70000,"intended"]]},{"id":"ln25","cat":"DIGITAL PARTNERS","code":"64380","type":"Brand Digital & Display","partner":"GreyHound Recorder","cells":[[10000,"spent"],[10000,"intended"],[10000,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln26","cat":"DIGITAL PARTNERS","code":"64380","type":"Brand Digital & Display","partner":"FotMob","cells":[[17500,"spent"],[0,"intended"],[32000,"spent"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln27","cat":"SOCIAL","code":"64050","type":"Acquisition Paid Social (Facebook)","partner":"Meta","cells":[[176083,"intended"],[164590,"intended"],[266652,"intended"],[148147,"intended"],[155001,"intended"],[447548,"intended"],[523948,"intended"],[377587,"intended"],[96235,"intended"],[96636,"intended"],[206632,"intended"],[184018,"intended"]]},{"id":"ln28","cat":"SOCIAL","code":"64060","type":"Acquisition Paid Social (Other)","partner":"TikTok","cells":[[54311,"intended"],[54213,"intended"],[87822,"intended"],[68393,"intended"],[58374,"intended"],[168548,"intended"],[197320,"intended"],[142200,"intended"],[36242,"intended"],[36393,"intended"],[77818,"intended"],[69302,"intended"]]},{"id":"ln29","cat":"SOCIAL","code":"64060","type":"Acquisition Paid Social (Other)","partner":"Snap","cells":[[17151,"intended"],[16264,"intended"],[31195,"intended"],[17331,"intended"],[18133,"intended"],[52357,"intended"],[61295,"intended"],[44173,"intended"],[11258,"intended"],[11305,"intended"],[24173,"intended"],[21528,"intended"]]},{"id":"ln30","cat":"SOCIAL","code":"64060","type":"Acquisition Paid Social (Other)","partner":"Reddit","cells":[[8575,"intended"],[13553,"intended"],[29058,"intended"],[16144,"intended"],[16891,"intended"],[48771,"intended"],[57097,"intended"],[41147,"intended"],[10487,"intended"],[10531,"intended"],[22518,"intended"],[20053,"intended"]]},{"id":"ln31","cat":"SOCIAL","code":"64040","type":"Acquisition Paid Social (Twitter)","partner":"X","cells":[[5717,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln32","cat":"SEM","code":"64010","type":"Acquisition SEM","partner":"Google","cells":[[334494,"intended"],[333788,"intended"],[591281,"intended"],[291599,"intended"],[289520,"intended"],[474854,"intended"],[420599,"intended"],[513964,"intended"],[158551,"intended"],[166207,"intended"],[161752,"intended"],[292676,"intended"]]},{"id":"ln33","cat":"SEM","code":"64010","type":"Acquisition SEM","partner":"Apple Search","cells":[[69367,"intended"],[69221,"intended"],[121106,"intended"],[40635,"intended"],[53920,"intended"],[256178,"intended"],[126344,"intended"],[151792,"intended"],[16257,"intended"],[17042,"intended"],[14448,"intended"],[71756,"intended"]]},{"id":"ln34","cat":"SEM","code":"64010","type":"Acquisition SEM","partner":"Bing","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln35","cat":"PROGRAMMATIC","code":"64020","type":"Acquisition Display, Content & Email","partner":"BVOD","cells":[[23341,"spent"],[0,"spent"],[124613,"spent"],[36000,"spent"],[0,"intended"],[272500,"intended"],[155000,"intended"],[135000,"intended"],[0,"intended"],[0,"intended"],[52176,"intended"],[105315,"intended"]]},{"id":"ln36","cat":"PROGRAMMATIC","code":"64020","type":"Acquisition Display, Content & Email","partner":"SF Video","cells":[[66879,"spent"],[15130,"spent"],[31614,"spent"],[24100,"spent"],[0,"intended"],[68000,"intended"],[61723,"intended"],[55000,"intended"],[0,"intended"],[20000,"intended"],[30184,"intended"],[81500,"intended"]]},{"id":"ln37","cat":"PROGRAMMATIC","code":"64020","type":"Acquisition Display, Content & Email","partner":"Display - Broadcast","cells":[[109246,"spent"],[20801,"spent"],[51439,"spent"],[28656,"spent"],[0,"intended"],[30135,"intended"],[29443,"intended"],[74510,"intended"],[0,"intended"],[14000,"intended"],[11632,"intended"],[65000,"intended"]]},{"id":"ln38","cat":"PROGRAMMATIC","code":"64020","type":"Acquisition Display, Content & Email","partner":"Display - Performance","cells":[[35208,"spent"],[19993,"spent"],[32699,"spent"],[0,"spent"],[37500,"intended"],[55333,"intended"],[45000,"intended"],[78851,"intended"],[31195,"intended"],[39858,"intended"],[45000,"intended"],[50000,"intended"]]},{"id":"ln39","cat":"PROGRAMMATIC","code":"64020","type":"Acquisition Display, Content & Email","partner":"Racing.com PG","cells":[[29928,"spent"],[19182,"spent"],[6637,"spent"],[12500,"intended"],[16988,"intended"],[20385,"intended"],[20385,"intended"],[13590,"intended"],[3398,"intended"],[3398,"intended"],[16988,"intended"],[20385,"intended"]]},{"id":"ln40","cat":"PROGRAMMATIC","code":"64020","type":"Acquisition Display, Content & Email","partner":"Motio - DOOH","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln41","cat":"PROGRAMMATIC","code":"64020","type":"Acquisition Display, Content & Email","partner":"QMS - DOOH","cells":[[25000,"spent"],[25000,"spent"],[25000,"spent"],[25000,"committed"],[25000,"committed"],[25000,"committed"],[25000,"intended"],[25000,"intended"],[25000,"intended"],[25000,"intended"],[25000,"intended"],[25000,"intended"]]},{"id":"ln42","cat":"PROGRAMMATIC","code":"64020","type":"Acquisition Display, Content & Email","partner":"YouTube","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln43","cat":"PROGRAMMATIC","code":"64020","type":"Acquisition Display, Content & Email","partner":"Contingency","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln44","cat":"AMBASSADORS","code":"64400","type":"Brand Ambassadors","partner":"Ash Wicks","cells":[[10000,"spent"],[10000,"spent"],[10000,"spent"],[10000,"committed"],[10000,"committed"],[10000,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[7500,"intended"],[10000,"intended"]]},{"id":"ln45","cat":"AMBASSADORS","code":"64400","type":"Brand Ambassadors","partner":"Jules Vallance","cells":[[23500,"spent"],[23500,"spent"],[23500,"spent"],[23500,"committed"],[23500,"committed"],[23500,"committed"],[23500,"committed"],[23500,"committed"],[23500,"committed"],[23500,"committed"],[23500,"committed"],[23500,"committed"]]},{"id":"ln46","cat":"AMBASSADORS","code":"64400","type":"Brand Ambassadors","partner":"Daisy Thomas","cells":[[22950,"spent"],[22950,"spent"],[22950,"spent"],[22950,"committed"],[22950,"committed"],[22950,"committed"],[22950,"committed"],[22950,"committed"],[22950,"committed"],[22950,"committed"],[22950,"committed"],[22950,"committed"]]},{"id":"ln47","cat":"AMBASSADORS","code":"64400","type":"Brand Ambassadors","partner":"Tom Mitchell","cells":[[11500,"spent"],[11500,"spent"],[11500,"spent"],[11500,"committed"],[11500,"committed"],[11500,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[11500,"intended"]]},{"id":"ln48","cat":"AMBASSADORS","code":"64400","type":"Brand Ambassadors","partner":"Nic Ashman","cells":[[15000,"spent"],[15000,"spent"],[15000,"spent"],[17000,"committed"],[15000,"committed"],[15000,"committed"],[15000,"committed"],[15000,"committed"],[15000,"committed"],[15000,"committed"],[15000,"committed"],[15000,"committed"]]},{"id":"ln49","cat":"AMBASSADORS","code":"64400","type":"Brand Ambassadors","partner":"Bernie Vince","cells":[[8200,"spent"],[8200,"spent"],[8200,"spent"],[8200,"committed"],[8200,"committed"],[8200,"committed"],[8200,"committed"],[8200,"committed"],[8200,"committed"],[0,"intended"],[8200,"intended"],[8200,"intended"]]},{"id":"ln50","cat":"AMBASSADORS","code":"64400","type":"Brand Ambassadors","partner":"Aaron Woods","cells":[[16000,"spent"],[16000,"spent"],[16000,"spent"],[16000,"committed"],[16000,"committed"],[16000,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[16000,"intended"]]},{"id":"ln51","cat":"AMBASSADORS","code":"64400","type":"Brand Ambassadors","partner":"Shaq","cells":[[144000,"spent"],[144000,"spent"],[144000,"spent"],[126000,"intended"],[126000,"intended"],[144000,"intended"],[144000,"intended"],[144000,"intended"],[144000,"intended"],[144000,"intended"],[144000,"intended"],[0,"intended"]]},{"id":"ln52","cat":"AMBASSADORS","code":"64400","type":"Brand Ambassadors","partner":"Arryn Siposs","cells":[[1200,"spent"],[1200,"spent"],[1200,"spent"],[1200,"committed"],[11200,"committed"],[11200,"committed"],[10000,"committed"],[10000,"committed"],[10000,"committed"],[20000,"committed"],[0,"intended"],[0,"intended"]]},{"id":"ln53","cat":"SOCIAL MEDIA CREATORS","code":"64365","type":"Brand Social Media","partner":"Liam Stapleton","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[50000,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln54","cat":"SOCIAL MEDIA CREATORS","code":"64365","type":"Brand Social Media","partner":"100k Sports","cells":[[13958,"spent"],[13958,"spent"],[13958,"spent"],[13958,"committed"],[13958,"committed"],[13958,"committed"],[13958,"committed"],[13958,"committed"],[13958,"committed"],[13958,"committed"],[13958,"committed"],[13958,"committed"]]},{"id":"ln55","cat":"SOCIAL MEDIA CREATORS","code":"64365","type":"Brand Social Media","partner":"28 Year Old Male","cells":[[17500,"spent"],[17500,"spent"],[17500,"spent"],[17500,"committed"],[17500,"committed"],[17500,"committed"],[17500,"committed"],[17500,"committed"],[17500,"committed"],[17500,"intended"],[17500,"intended"],[17500,"intended"]]},{"id":"ln56","cat":"SOCIAL MEDIA CREATORS","code":"64365","type":"Brand Social Media","partner":"Chocs Chat","cells":[[10833,"spent"],[10833,"spent"],[10833,"spent"],[10833,"committed"],[10833,"committed"],[10833,"committed"],[10833,"committed"],[10833,"committed"],[10833,"committed"],[10833,"intended"],[10833,"intended"],[10833,"intended"]]},{"id":"ln57","cat":"SOCIAL MEDIA CREATORS","code":"64365","type":"Brand Social Media","partner":"Kick It Forward","cells":[[26041,"spent"],[26041,"spent"],[26041,"spent"],[26041,"committed"],[26041,"committed"],[26041,"committed"],[26041,"committed"],[26041,"committed"],[26041,"committed"],[26041,"intended"],[26041,"intended"],[26041,"intended"]]},{"id":"ln58","cat":"SOCIAL MEDIA CREATORS","code":"64365","type":"Brand Social Media","partner":"Ball Magnets (NBA)","cells":[[20000,"spent"],[20000,"spent"],[20000,"spent"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln59","cat":"SOCIAL MEDIA CREATORS","code":"64365","type":"Brand Social Media","partner":"Fanatics TV Kenty Blitz","cells":[[112500,"spent"],[0,"intended"],[112500,"spent"],[0,"intended"],[112500,"committed"],[0,"intended"],[112500,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln60","cat":"SOCIAL MEDIA CREATORS","code":"64365","type":"Brand Social Media","partner":"Sea Eagles","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[50000,"committed"],[0,"intended"],[50000,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[50000,"intended"],[50000,"intended"]]},{"id":"ln61","cat":"SOCIAL MEDIA CREATORS","code":"64365","type":"Brand Social Media","partner":"Sharks","cells":[[18750,"spent"],[18750,"spent"],[18750,"spent"],[18750,"committed"],[18750,"committed"],[18750,"committed"],[18750,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[18750,"intended"]]},{"id":"ln62","cat":"SOCIAL MEDIA CREATORS","code":"64365","type":"Brand Social Media","partner":"Currumbin Eagles","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln63","cat":"SOCIAL MEDIA CREATORS","code":"64365","type":"Brand Social Media","partner":"Fanatics TV World Cup","cells":[[0,"intended"],[0,"intended"],[45000,"spent"],[45000,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln64","cat":"SOCIAL MEDIA CREATORS","code":"64365","type":"Brand Social Media","partner":"Fanatics TV RLI & In the Moment","cells":[[0,"intended"],[0,"intended"],[40000,"spent"],[40000,"committed"],[40000,"committed"],[40000,"committed"],[40000,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln65","cat":"SOCIAL MEDIA CREATORS","code":"64365","type":"Brand Social Media","partner":"NFL Launch Activations + Event","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[50000,"intended"],[50000,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln66","cat":"AGENCIES","code":"64410","type":"Brand Agencies","partner":"Rolln Media","cells":[[30000,"spent"],[30000,"spent"],[30000,"spent"],[30000,"committed"],[30000,"committed"],[30000,"committed"],[30000,"committed"],[30000,"committed"],[30000,"committed"],[30000,"intended"],[30000,"intended"],[30000,"intended"]]},{"id":"ln67","cat":"AGENCIES","code":"64410","type":"Brand Agencies","partner":"Shannon - Hybrid Media","cells":[[15000,"spent"],[15000,"spent"],[15000,"spent"],[20000,"intended"],[20000,"intended"],[20000,"intended"],[15000,"intended"],[15000,"intended"],[15000,"intended"],[15000,"intended"],[15000,"intended"],[15000,"intended"]]},{"id":"ln68","cat":"AGENCIES","code":"64410","type":"Brand Agencies","partner":"Kantar","cells":[[10417,"spent"],[10417,"spent"],[10417,"spent"],[10417,"committed"],[10417,"committed"],[10417,"committed"],[10417,"committed"],[10417,"committed"],[10417,"committed"],[10417,"intended"],[10417,"intended"],[10417,"intended"]]},{"id":"ln69","cat":"AGENCIES","code":"64410","type":"Brand Agencies","partner":"Kinesso","cells":[[58917,"spent"],[58917,"spent"],[58917,"spent"],[58917,"committed"],[58917,"committed"],[58917,"committed"],[58917,"committed"],[58917,"committed"],[58917,"committed"],[58917,"committed"],[58917,"committed"],[58917,"committed"]]},{"id":"ln70","cat":"AGENCIES","code":"64410","type":"Brand Agencies","partner":"Enque","cells":[[50000,"spent"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln71","cat":"AGENCIES","code":"64410","type":"Brand Agencies","partner":"Jersey Legends","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[1052828,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln72","cat":"AGENCIES","code":"64410","type":"Brand Agencies","partner":"Orchestra","cells":[[12000,"spent"],[12000,"spent"],[12000,"spent"],[12000,"intended"],[12000,"intended"],[12000,"intended"],[12000,"intended"],[12000,"intended"],[12000,"intended"],[12000,"intended"],[12000,"intended"],[12000,"intended"]]},{"id":"ln73","cat":"EVENTS","code":"64370","type":"Brand Events","partner":"Tailgate Fest","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[35000,"intended"],[0,"intended"]]},{"id":"ln74","cat":"EVENTS","code":"64370","type":"Brand Events","partner":"Gather Round","cells":[[50000,"spent"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln75","cat":"EVENTS","code":"64370","type":"Brand Events","partner":"Milton SOO Game 3","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[30000,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln76","cat":"ADTECH / MARTECH","code":"64070","type":"Acquisition Digital MarTech","partner":"SA360","cells":[[5654,"spent"],[5645,"spent"],[7220,"spent"],[5710,"intended"],[6848,"intended"],[12402,"intended"],[9473,"intended"],[11582,"intended"],[3750,"intended"],[3930,"intended"],[3824,"intended"],[7308,"intended"]]},{"id":"ln77","cat":"ADTECH / MARTECH","code":"64070","type":"Acquisition Digital MarTech","partner":"FlashTalking","cells":[[14065,"spent"],[14065,"spent"],[14065,"spent"],[14065,"intended"],[14065,"intended"],[14065,"intended"],[14065,"intended"],[14065,"intended"],[14065,"intended"],[14065,"intended"],[14065,"intended"],[14065,"intended"]]},{"id":"ln78","cat":"ADTECH / MARTECH","code":"64070","type":"Acquisition Digital MarTech","partner":"Adverity","cells":[[3000,"spent"],[3000,"spent"],[3000,"spent"],[3000,"intended"],[3000,"intended"],[3000,"intended"],[3000,"intended"],[3000,"intended"],[3000,"intended"],[3000,"intended"],[3000,"intended"],[3000,"intended"]]},{"id":"ln79","cat":"ADTECH / MARTECH","code":"64070","type":"Acquisition Digital MarTech","partner":"SMS","cells":[[1750,"spent"],[1750,"spent"],[1750,"spent"],[1750,"intended"],[1750,"intended"],[1750,"intended"],[1750,"intended"],[1750,"intended"],[1750,"intended"],[1750,"intended"],[1750,"intended"],[1750,"intended"]]},{"id":"ln80","cat":"ADTECH / MARTECH","code":"64070","type":"Acquisition Digital MarTech","partner":"Peach IMD","cells":[[5000,"spent"],[5000,"spent"],[5000,"spent"],[5000,"intended"],[5000,"intended"],[5000,"intended"],[5000,"intended"],[5000,"intended"],[5000,"intended"],[5000,"intended"],[5000,"intended"],[5000,"intended"]]},{"id":"ln81","cat":"ADTECH / MARTECH","code":"64070","type":"Acquisition Digital MarTech","partner":"CAD via Hybrid Media","cells":[[5000,"spent"],[5000,"spent"],[5000,"spent"],[5000,"intended"],[5000,"intended"],[5000,"intended"],[5000,"intended"],[5000,"intended"],[5000,"intended"],[5000,"intended"],[5000,"intended"],[5000,"intended"]]},{"id":"ln82","cat":"ADTECH / MARTECH","code":"64070","type":"Acquisition Digital MarTech","partner":"Nifty Images","cells":[[1900,"spent"],[1900,"spent"],[1900,"spent"],[1900,"intended"],[1900,"intended"],[1900,"intended"],[1900,"intended"],[1900,"intended"],[1900,"intended"],[1900,"intended"],[1900,"intended"],[1900,"intended"]]},{"id":"ln83","cat":"CONTRACTORS","code":"64810","type":"Marketing Support - Contractors","partner":"Simon Legg","cells":[[15959,"intended"],[15959,"intended"],[15959,"intended"],[15959,"intended"],[15959,"intended"],[15959,"intended"],[15959,"intended"],[15959,"intended"],[15959,"intended"],[15959,"intended"],[15959,"intended"],[15959,"intended"]]},{"id":"ln84","cat":"CONTRACTORS","code":"64810","type":"Marketing Support - Contractors","partner":"Luke Morgan","cells":[[15000,"intended"],[15000,"intended"],[15000,"intended"],[15000,"intended"],[15000,"intended"],[15000,"intended"],[15000,"intended"],[15000,"intended"],[15000,"intended"],[15000,"intended"],[15000,"intended"],[15000,"intended"]]},{"id":"ln85","cat":"CONTRACTORS","code":"64810","type":"Marketing Support - Contractors","partner":"Darcy Ballard","cells":[[9240,"intended"],[9240,"intended"],[9240,"intended"],[9240,"intended"],[9240,"intended"],[9240,"intended"],[9240,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln86","cat":"AUSMERICAN ACES","code":"64365","type":"Brand Social Media","partner":"Ausmerican Aces","cells":[[46667,"committed"],[46667,"committed"],[46667,"committed"],[46667,"committed"],[46667,"committed"],[46667,"committed"],[46667,"committed"],[46667,"committed"],[46667,"committed"],[46667,"committed"],[46667,"committed"],[46667,"committed"]]},{"id":"ln87","cat":"FOXCATCHER","code":"64020","type":"Acquisition Display, Content & Email","partner":"YouTube","cells":[[6250,"spent"],[6250,"spent"],[6250,"spent"],[6250,"intended"],[6250,"intended"],[6250,"intended"],[6250,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[6250,"intended"]]},{"id":"ln88","cat":"FOXCATCHER","code":"64380","type":"Brand Digital & Display","partner":"Foxcatcher - Racing","cells":[[6429,"spent"],[6429,"spent"],[6429,"spent"],[6429,"intended"],[6429,"intended"],[6429,"intended"],[6429,"intended"],[6429,"intended"],[3214,"intended"],[0,"intended"],[3214,"intended"],[6429,"intended"]]},{"id":"ln89","cat":"STATMATE","code":"64390","type":"Brand Merchandise","partner":"StatMate Merchandise","cells":[[10000,"spent"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln90","cat":"STATMATE","code":"64050","type":"Acquisition Paid Social (Facebook)","partner":"Meta","cells":[[10000,"spent"],[10000,"spent"],[10000,"spent"],[10000,"intended"],[10000,"intended"],[10000,"intended"],[10000,"intended"],[10000,"intended"],[10000,"intended"],[10000,"intended"],[10000,"intended"],[10000,"intended"]]},{"id":"ln91","cat":"STATMATE","code":"64060","type":"Acquisition Paid Social (Other)","partner":"TikTok","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln92","cat":"STATMATE","code":"64020","type":"Acquisition Display, Content & Email","partner":"Programmatic Performance","cells":[[8844,"spent"],[12356,"spent"],[10326,"spent"],[9159,"intended"],[30081,"intended"],[5466,"intended"],[4093,"intended"],[8804,"intended"],[12324,"intended"],[5990,"intended"],[1725,"intended"],[4900,"intended"]]},{"id":"ln93","cat":"STATMATE","code":"64010","type":"Acquisition SEM","partner":"Google","cells":[[10000,"intended"],[10000,"intended"],[10000,"intended"],[10000,"intended"],[10000,"intended"],[10000,"intended"],[10000,"intended"],[10000,"intended"],[10000,"intended"],[10000,"intended"],[10000,"intended"],[10000,"intended"]]}]};
+const BUILT = "2026-07-17";
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+"use strict";
+/* ============================ APP ============================ */
+const KEY='pba_budget_jpfy27_v2';
+const STATUSES=['spent','committed','intended'];
+const SLABEL={spent:'Spent',committed:'Committed',intended:'Intended'};
+
+let state=null, view='overview', filter='all', query='', mode='view', collapsed=false;
+let selection=new Set(), selectMode=false, visIds=[], dragging=false, dragAnchor=null, moved=false, lastClicked=null;
+let selCats=new Set(CATS);   // overview category multi-select
+
+/* ---------- persistence ---------- */
+function freshFromSeed(){ return JSON.parse(JSON.stringify(SEED)); }
+function load(){
+  try{ const raw=localStorage.getItem(KEY); if(raw) return JSON.parse(raw); }catch(e){}
+  return freshFromSeed();
+}
+function save(){
+  state.updated=new Date().toISOString();
+  if(dbEnabled){ scheduleDbSave(); return; }
+  try{ localStorage.setItem(KEY,JSON.stringify(state)); flashSaved(); }
+  catch(e){ flashSaved('Session only'); }
+}
+let saveT;
+function flashSaved(txt){
+  const c=document.getElementById('savechip');
+  c.innerHTML='<span class="dot"></span> '+(txt||'Saved '+new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}));
+}
+
+/* ---------- Supabase (SQL database) sync ---------- */
+let sb=null, dbEnabled=false, dbTable='budget_line_items', saving=false, lastSaveTs=0, saveTimer=null;
+function sbConfig(){ try{ return JSON.parse(localStorage.getItem(KEY+'_sb')||'null'); }catch(e){ return null; } }
+function setSbConfig(cfg){ localStorage.setItem(KEY+'_sb',JSON.stringify(cfg)); }
+function itemsToRows(){ return state.items.map(it=>({id:it.id,cat:it.cat,code:String(it.code),type:it.type||'',partner:it.partner,cells:it.cells})); }
+function rowsToItems(rows){ return rows.map(r=>({id:r.id,cat:r.cat,code:String(r.code),type:r.type||'',partner:r.partner,cells:r.cells})); }
+function syncChip(st){
+  const c=document.getElementById('savechip'); if(!c) return;
+  if(st==='connected') c.innerHTML='<span class="dot"></span> Database · synced';
+  else if(st==='syncing') c.innerHTML='<span class="dot" style="background:var(--committed)"></span> Saving…';
+  else if(st==='error') c.innerHTML='<span class="dot" style="background:var(--danger)"></span> Sync error';
+  else c.innerHTML='<span class="dot"></span> Local only';
+}
+async function connectDb(cfg,seedIfEmpty){
+  if(typeof window.supabase==='undefined'){ toast('Database library not loaded — check your connection'); syncChip('local'); return false; }
+  try{
+    sb=window.supabase.createClient(cfg.url,cfg.key);
+    dbTable=cfg.table||'budget_line_items';
+    const {error}=await sb.from(dbTable).select('id').limit(1);
+    if(error) throw error;
+    dbEnabled=true; setSbConfig(cfg); syncChip('connected');
+    await dbLoad(seedIfEmpty);
+    subscribeRealtime();
+    return true;
+  }catch(e){ sb=null; dbEnabled=false; syncChip('local'); toast('Connect failed: '+(e.message||e)); return false; }
+}
+function disconnectDb(){ dbEnabled=false; sb=null; localStorage.removeItem(KEY+'_sb'); syncChip('local'); toast('Disconnected — now using local storage'); }
+async function dbLoad(seedIfEmpty){
+  try{
+    const {data,error}=await sb.from(dbTable).select('*'); if(error) throw error;
+    if((!data||!data.length) && seedIfEmpty){ await dbReplaceAll(freshFromSeed().items); toast('Database seeded with the JPFY27 starting figures'); return; }
+    if(data&&data.length){ const pc=state?state.passcode:null; state={items:rowsToItems(data),passcode:pc}; }
+    render(); syncChip('connected');
+  }catch(e){ syncChip('error'); toast('Load failed: '+(e.message||e)); }
+}
+function scheduleDbSave(){ syncChip('syncing'); clearTimeout(saveTimer); saveTimer=setTimeout(dbSaveAll,600); }
+async function dbSaveAll(){
+  if(!dbEnabled) return;
+  saving=true; lastSaveTs=Date.now();
+  try{ const {error}=await sb.from(dbTable).upsert(itemsToRows()); if(error) throw error; syncChip('connected'); }
+  catch(e){ syncChip('error'); toast('Save failed: '+(e.message||e)); }
+  finally{ saving=false; lastSaveTs=Date.now(); }
+}
+async function dbDeleteRow(id){ if(!dbEnabled) return; try{ await sb.from(dbTable).delete().eq('id',id); }catch(e){} }
+async function dbReplaceAll(items){
+  if(!dbEnabled) return;
+  saving=true; lastSaveTs=Date.now(); syncChip('syncing');
+  try{
+    await sb.from(dbTable).delete().neq('id','__never__');
+    const rows=items.map(it=>({id:it.id,cat:it.cat,code:String(it.code),type:it.type||'',partner:it.partner,cells:it.cells}));
+    if(rows.length){ const {error}=await sb.from(dbTable).insert(rows); if(error) throw error; }
+    state={items:JSON.parse(JSON.stringify(items)),passcode:state?state.passcode:null};
+    render(); syncChip('connected');
+  }catch(e){ syncChip('error'); toast('Replace failed: '+(e.message||e)); }
+  finally{ saving=false; lastSaveTs=Date.now(); }
+}
+function subscribeRealtime(){
+  try{
+    sb.channel('budget_'+dbTable).on('postgres_changes',{event:'*',schema:'public',table:dbTable},()=>{
+      if(saving || Date.now()-lastSaveTs<2500) return;                 // ignore our own echo
+      if(document.getElementById('pop').classList.contains('open') || selection.size) return; // don't clobber active edit
+      dbLoad(false);
+    }).subscribe();
+  }catch(e){}
+}
+function connectModal(){
+  const cfg=sbConfig()||{};
+  openModal('<h3>Connect to a SQL database</h3><p>Paste your Supabase project details. The anon key is a public key, safe to store here. Once connected, the budget lives in the database and everyone connected sees the same live figures.</p>'
+    +'<label>Project URL</label><input id="su" placeholder="https://yourproject.supabase.co" value="'+esc(cfg.url||'')+'">'
+    +'<label>Anon public key</label><input id="sk" placeholder="eyJhbGciOi…" value="'+esc(cfg.key||'')+'">'
+    +'<label>Table name</label><input id="st" placeholder="budget_line_items" value="'+esc(cfg.table||'budget_line_items')+'">'
+    +'<div style="font-size:11.5px;color:var(--muted);margin-top:10px">First time? Run the setup SQL (provided separately) in your Supabase SQL editor, then connect here — an empty table gets seeded automatically.</div>'
+    +'<div class="actions">'+(dbEnabled?'<button class="btn" id="sbdisc" style="margin-right:auto;border-color:var(--danger);color:var(--danger)">Disconnect</button>':'')
+    +'<button class="btn" data-close>Cancel</button><button class="btn primary" id="sbgo">Connect</button></div>');
+  document.getElementById('sbgo').onclick=async()=>{
+    const c2={url:document.getElementById('su').value.trim(),key:document.getElementById('sk').value.trim(),table:document.getElementById('st').value.trim()||'budget_line_items'};
+    if(!c2.url||!c2.key){ toast('Enter both the URL and key'); return; }
+    closeModal(); syncChip('syncing');
+    if(await connectDb(c2,true)) toast('Connected — data is now shared');
+  };
+  const dc=document.getElementById('sbdisc'); if(dc) dc.onclick=()=>{ disconnectDb(); closeModal(); };
+}
+
+/* ---------- money ---------- */
+const AUD=new Intl.NumberFormat('en-AU',{maximumFractionDigits:0});
+function fmt(n){ return '$'+AUD.format(Math.round(n||0)); }
+function fmtShort(n){ n=Math.round(n||0); const a=Math.abs(n);
+  if(a>=1e6) return '$'+(n/1e6).toFixed(a>=1e7?1:2)+'M';
+  if(a>=1e3) return '$'+(n/1e3).toFixed(0)+'k'; return '$'+n; }
+
+/* ---------- aggregation ---------- */
+function itemTotal(it){ return it.cells.reduce((s,c)=>s+(c[0]||0),0); }
+function itemByStatus(it){ const o={spent:0,committed:0,intended:0};
+  it.cells.forEach(c=>{o[c[1]]+=(c[0]||0)}); return o; }
+function catItems(cat){ return state.items.filter(i=>i.cat===cat); }
+function totalsFor(items){
+  const o={spent:0,committed:0,intended:0,total:0,months:Array(12).fill(0),
+           mstat:Array.from({length:12},()=>({spent:0,committed:0,intended:0}))};
+  items.forEach(it=>it.cells.forEach((c,mi)=>{
+    const a=c[0]||0; o.total+=a; o[c[1]]+=a; o.months[mi]+=a; o.mstat[mi][c[1]]+=a;
+  }));
+  return o;
+}
+function matches(it){
+  if(!query) return true;
+  const q=query.toLowerCase();
+  return (it.partner||'').toLowerCase().includes(q) || (it.code||'').toLowerCase().includes(q)
+      || (it.type||'').toLowerCase().includes(q) || it.cat.toLowerCase().includes(q);
+}
+
+/* ============================ NAV ============================ */
+function renderNav(){
+  const nav=document.getElementById('nav');
+  const grand=totalsFor(state.items);
+  let h='<button class="navitem '+(view==='overview'?'active':'')+'" data-view="overview">'
+      +'<span class="navname">Overview</span><span class="navval">'+fmtShort(grand.total)+'</span></button>';
+  h+='<div class="grouplbl">Categories</div>';
+  CATS.forEach(cat=>{
+    const t=totalsFor(catItems(cat)).total;
+    h+='<button class="navitem '+(view===cat?'active':'')+'" data-view="'+esc(cat)+'">'
+      +'<span class="navname">'+esc(titlecase(cat))+'</span><span class="navval">'+fmtShort(t)+'</span></button>';
+  });
+  nav.innerHTML=h;
+  nav.querySelectorAll('.navitem').forEach(b=>b.onclick=()=>{ setView(b.dataset.view); closeSide(); });
+}
+function titlecase(s){ return s.replace(/\w\S*/g,w=>w[0].toUpperCase()+w.slice(1).toLowerCase()).replace(/ And /g,' & ').replace('Ooh','OOH').replace('Tv','TV').replace('Sem','SEM').replace('Statmate','StatMate'); }
+
+/* ============================ RENDER ROUTER ============================ */
+function render(){ renderNav(); (view==='overview'?renderOverview():renderCategory(view)); }
+function setView(v){ view=v; selection.clear(); render(); window.scrollTo(0,0); }
+
+/* ============================ OVERVIEW ============================ */
+function renderOverview(){
+  const focus=filter; // all | spent | committed | intended
+  const selItems=state.items.filter(i=>selCats.has(i.cat));
+  const g=totalsFor(selItems);
+  const pct=s=>g.total?(g[s]/g.total*100):0;
+  const c=document.getElementById('content');
+  let h='';
+
+  if(!localStorage.getItem(KEY+'_hintseen')){
+    h+='<div class="hint"><b>Tip</b> Statuses are pre-set from the colours in your ACTUALS OVERVIEW tab '
+     +'(green = Spent, yellow = Committed, the rest = Intended). In <b>Edit</b> mode, click a cell to change it, '
+     +'or drag / <b>Select cells</b> to tag many at once.'
+     +'<button onclick="dismissHint()">Got it</button></div>';
+  }
+
+  // category multi-select bar
+  h+='<div class="ovbar"><div class="ovhead">'
+    +'<span class="lbl">Categories · '+selCats.size+' of '+CATS.length+' selected</span>'
+    +'<span class="foc">Showing <b>'+(focus==='all'?'all statuses':SLABEL[focus])+'</b>'
+      +(focus!=='all'?' — change with the status filter above':'')+'</span></div>';
+  h+='<div class="chips"><button class="chip util" data-all="1">All</button>'
+    +'<button class="chip util" data-none="1">Clear</button>';
+  CATS.forEach(cat=>{
+    const t=totalsFor(catItems(cat));
+    const val=focus==='all'?t.total:t[focus];
+    const fcls=focus!=='all'?(' '+focus+'f'):'';
+    h+='<button class="chip'+fcls+(selCats.has(cat)?' active':'')+'" data-cat="'+esc(cat)+'">'
+      +esc(titlecase(cat))+' <span class="cv">'+fmtShort(val)+'</span></button>';
+  });
+  h+='</div></div>';
+
+  if(selCats.size===0){
+    c.innerHTML=h+'<div class="panel"><div style="padding:44px;text-align:center;color:var(--muted)">Pick one or more categories above to see totals.</div></div>';
+    wireOvChips(); return;
+  }
+
+  const headVal=focus==='all'?g.total:g[focus];
+  const headLbl=focus==='all'?'Total JPFY27':SLABEL[focus];
+  const scope=selCats.size===CATS.length?'all categories':selCats.size+' categor'+(selCats.size>1?'ies':'y');
+
+  // hero + allocation bar
+  h+='<div class="hero"><div class="hero-top"><div>'
+    +'<div class="lbl">'+headLbl+' · '+scope+'</div>'
+    +'<div class="hero-total">'+fmt(headVal)+'</div>'
+    +'<div class="hero-sub">'+selItems.length+' line items · Apr 2026 – Mar 2027</div>'
+    +'</div></div>';
+  h+='<div class="allocbar">'+STATUSES.map(s=>{
+      const w=pct(s); if(w<=0) return '';
+      const dim=(focus!=='all'&&s!==focus)?' dim':'';
+      return '<div class="seg-b '+s+dim+'" style="width:'+w+'%">'+(w>9?SLABEL[s]:'')+'</div>';
+    }).join('')+'</div>';
+  h+='<div class="legend">'+STATUSES.map(s=>
+      '<div class="lg"><span class="sw" style="background:var(--'+s+')"></span>'
+      +'<span>'+SLABEL[s]+'</span><span class="v">'+fmt(g[s])+'</span>'
+      +'<span class="p">'+pct(s).toFixed(1)+'%</span></div>').join('')+'</div>';
+  h+='</div>';
+
+  // KPIs
+  h+='<div class="kpis">';
+  h+=kpi('Committed + spent','',fmt(g.spent+g.committed),
+        ((g.spent+g.committed)/(g.total||1)*100).toFixed(0)+'% locked or paid');
+  STATUSES.forEach(s=> h+=kpi(SLABEL[s],s,fmt(g[s]),pct(s).toFixed(1)+'% of shown',focus===s));
+  h+='</div>';
+
+  // category table (only selected; ranked by focus metric when a status is chosen)
+  let cols=CATS.filter(cat=>selCats.has(cat));
+  if(focus!=='all') cols=cols.slice().sort((a,b)=>totalsFor(catItems(b))[focus]-totalsFor(catItems(a))[focus]);
+  const fc=s=>focus===s?' focuscol':'';
+  h+='<div class="panel"><div class="panel-h"><h2>By category</h2>'
+    +'<span class="sub">'+(focus!=='all'?'Ranked by '+SLABEL[focus]:'Click a category to open its detail')+'</span></div><div class="scroll"><table>'
+    +'<thead><tr><th>Category</th>'
+    +'<th class="tot'+fc('spent')+'">Spent</th><th class="tot'+fc('committed')+'">Committed</th>'
+    +'<th class="tot'+fc('intended')+'">Intended</th><th class="tot">Total</th><th>Mix</th></tr></thead><tbody>';
+  cols.forEach(cat=>{
+    const t=totalsFor(catItems(cat));
+    h+='<tr class="catrow" data-cat="'+esc(cat)+'">'
+      +'<td class="rowlbl"><span class="p">'+esc(titlecase(cat))+'</span></td>'
+      +'<td class="num'+fc('spent')+'" style="color:var(--spent)">'+fmt(t.spent)+'</td>'
+      +'<td class="num'+fc('committed')+'" style="color:var(--committed)">'+fmt(t.committed)+'</td>'
+      +'<td class="num'+fc('intended')+'" style="color:var(--intended)">'+fmt(t.intended)+'</td>'
+      +'<td class="tot">'+fmt(t.total)+'</td><td>'+minibar(t)+'</td></tr>';
+  });
+  h+='<tr class="subtotal"><td>Total</td>'
+    +'<td class="num'+fc('spent')+'">'+fmt(g.spent)+'</td><td class="num'+fc('committed')+'">'+fmt(g.committed)+'</td>'
+    +'<td class="num'+fc('intended')+'">'+fmt(g.intended)+'</td><td class="tot">'+fmt(g.total)+'</td><td></td></tr>';
+  h+='</tbody></table></div></div>';
+
+  // monthly phasing (dim non-focus rows)
+  h+='<div class="panel"><div class="panel-h"><h2>Monthly phasing</h2>'
+    +'<span class="sub">'+scope+', by status</span></div><div class="scroll"><table>'
+    +'<thead><tr><th>Status</th>'+MONTHS.map(m=>'<th class="month">'+m+'</th>').join('')+'<th class="tot">Total</th></tr></thead><tbody>';
+  STATUSES.forEach(s=>{
+    const dim=(focus!=='all'&&s!==focus)?' class="dimrow"':'';
+    h+='<tr'+dim+'><td class="rowlbl"><span class="stag '+s+'">'+SLABEL[s]+'</span></td>'
+      +g.mstat.map(m=>'<td class="num" style="color:var(--'+s+')">'+(m[s]?fmtShort(m[s]):'<span style="color:var(--faint)">–</span>')+'</td>').join('')
+      +'<td class="tot">'+fmt(g[s])+'</td></tr>';
+  });
+  h+='<tr class="subtotal"><td>Total</td>'
+    +g.months.map(m=>'<td class="num">'+fmtShort(m)+'</td>').join('')
+    +'<td class="tot">'+fmt(g.total)+'</td></tr>';
+  h+='</tbody></table></div></div>';
+
+  c.innerHTML=h;
+  c.querySelectorAll('.catrow').forEach(r=>r.onclick=()=>setView(r.dataset.cat));
+  wireOvChips();
+}
+function wireOvChips(){
+  const c=document.getElementById('content');
+  const all=c.querySelector('[data-all]'); if(all) all.onclick=()=>{selCats=new Set(CATS); renderOverview();};
+  const none=c.querySelector('[data-none]'); if(none) none.onclick=()=>{selCats=new Set(); renderOverview();};
+  c.querySelectorAll('.chip[data-cat]').forEach(b=>b.onclick=()=>{
+    const cat=b.dataset.cat; selCats.has(cat)?selCats.delete(cat):selCats.add(cat); renderOverview();
+  });
+}
+function kpi(k,s,v,sub,foc){
+  const sw=s?'<span class="swx" style="background:var(--'+s+')"></span>':'';
+  const style=(foc&&s)?' style="color:var(--'+s+')"':'';
+  return '<div class="kpi'+(foc?' focus':'')+'"'+style+'><div class="k" style="color:var(--muted)">'+sw+k+'</div><div class="v" '
+    +(s?'style="color:var(--'+s+')"':'')+'>'+v+'</div><div class="s">'+sub+'</div></div>';
+}
+function minibar(t){
+  const T=t.total||1;
+  return '<span class="minibar">'
+    +'<i class="spent" style="width:'+(t.spent/T*100)+'%"></i>'
+    +'<i class="committed" style="width:'+(t.committed/T*100)+'%"></i>'
+    +'<i class="intended" style="width:'+(t.intended/T*100)+'%"></i></span>';
+}
+
+/* ============================ CATEGORY DETAIL ============================ */
+function renderCategory(cat){
+  const c=document.getElementById('content');
+  let items=catItems(cat).filter(matches);
+  const t=totalsFor(catItems(cat));
+  let h='';
+  h+='<div class="hero" style="padding:18px 22px"><div class="hero-top">'
+    +'<div><div class="lbl">'+esc(titlecase(cat))+'</div>'
+    +'<div class="hero-total" style="font-size:28px">'+fmt(t.total)+'</div>'
+    +'<div class="hero-sub">'+catItems(cat).length+' line items</div></div>'
+    +'<div class="legend" style="margin-top:0">'+STATUSES.map(s=>
+       '<div class="lg"><span class="sw" style="background:var(--'+s+')"></span><span>'+SLABEL[s]
+       +'</span><span class="v">'+fmt(t[s])+'</span></div>').join('')+'</div></div>'
+    +'<div class="allocbar" style="height:26px;margin-top:14px">'+STATUSES.map(s=>{
+        const w=t.total?t[s]/t.total*100:0; if(w<=0)return'';
+        return '<div class="seg-b '+s+'" style="width:'+w+'%">'+(w>12?fmtShort(t[s]):'')+'</div>';}).join('')
+    +'</div></div>';
+
+  h+='<div class="panel"><div class="panel-h"><h2>Line items</h2>';
+  if(mode==='edit') h+='<div style="display:flex;gap:8px"><button class="btn '+(selectMode?'on':'')+'" id="selmode">'+(selectMode?'Selecting ✓':'Select cells')+'</button><button class="btn primary" id="additem">+ Add line item</button></div>';
+  else h+='<span class="sub">Switch to Edit to change figures</span>';
+  h+='</div><div class="scroll"><table><thead><tr>'
+    +'<th>Line item</th>';
+  if(!collapsed){
+    MONTHS.forEach((m,i)=>{ h+='<th class="month" data-mi="'+i+'" title="Click to tag whole column (Edit mode)">'+m+'</th>'; });
+  }
+  h+='<th class="tot">Total</th><th></th></tr></thead><tbody>';
+
+  if(items.length===0){
+    h+='<tr><td colspan="'+(collapsed?3:15)+'" style="text-align:center;color:var(--muted);padding:26px">'
+      +(query?'No line items match “'+esc(query)+'”.':'No line items yet. Switch to Edit to add one.')+'</td></tr>';
+  }
+
+  items.forEach(it=>{
+    const bs=itemByStatus(it), tot=itemTotal(it);
+    h+='<tr data-id="'+it.id+'"><td class="rowlbl"><span class="p">'+esc(it.partner)+'</span> '
+      +'<span class="meta">'+esc(it.code)+(it.type?' · '+esc(it.type):'')+'</span></td>';
+    if(!collapsed){
+      it.cells.forEach((cell,mi)=>{
+        const a=cell[0]||0, st=cell[1];
+        const dim = (filter!=='all' && st!==filter) ? ' dim':'';
+        h+='<td class="cell '+st+dim+'" data-id="'+it.id+'" data-mi="'+mi+'">'
+          +'<span class="amt'+(a===0?' zero':'')+'">'+(a===0?'–':AUD.format(a))+'</span></td>';
+      });
+    }
+    h+='<td class="tot">'+fmt(tot)+'</td>'
+      +'<td><span class="rowact">'
+      + (mode==='edit'?'<button class="iconbtn sm" data-rowtag="'+it.id+'" title="Tag whole row">◧</button>'
+        +'<button class="iconbtn sm" data-del="'+it.id+'" title="Delete line">✕</button>':'')
+      +'</span></td></tr>';
+  });
+
+  // subtotal
+  const st2=totalsFor(items);
+  h+='<tr class="subtotal"><td>Subtotal'+(query?' (filtered)':'')+'</td>';
+  if(!collapsed){ st2.months.forEach(m=> h+='<td class="num">'+(m?fmtShort(m):'–')+'</td>'); }
+  h+='<td class="tot">'+fmt(st2.total)+'</td><td></td></tr>';
+  h+='</tbody></table></div></div>';
+
+  c.innerHTML=h;
+
+  // wire cells for click-edit + drag/multi-select
+  if(mode==='edit'){
+    visIds = items.map(i=>i.id);
+    c.querySelectorAll('td.cell').forEach(td=>{
+      td.addEventListener('mousedown',onCellDown);
+      td.addEventListener('mouseenter',onCellEnter);
+      td.addEventListener('touchstart',onCellTouch,{passive:true});
+    });
+    c.querySelectorAll('th.month').forEach(th=>{th.style.cursor='pointer'; th.onclick=()=>bulkColumn(cat,+th.dataset.mi);});
+    c.querySelectorAll('[data-rowtag]').forEach(b=>b.onclick=()=>bulkRow(b.dataset.rowtag));
+    c.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>delItem(b.dataset.del));
+    const add=document.getElementById('additem'); if(add) add.onclick=()=>addItem(cat);
+    const sm=document.getElementById('selmode'); if(sm) sm.onclick=()=>{selectMode=!selectMode; selection.clear(); renderCategory(cat);};
+    paintSel();
+  }
+}
+
+/* ---------- selection engine ---------- */
+function keyOf(id,mi){ return id+'|'+mi; }
+function cellEl(id,mi){ return document.querySelector('td.cell[data-id="'+id+'"][data-mi="'+mi+'"]'); }
+function paintSel(){
+  document.querySelectorAll('td.cell.sel').forEach(x=>x.classList.remove('sel'));
+  selection.forEach(k=>{ const [id,mi]=k.split('|'); const el=cellEl(id,mi); if(el) el.classList.add('sel'); });
+  const bar=document.getElementById('bulkbar'), n=selection.size;
+  if(n>0 && mode==='edit' && view!=='overview'){ bar.classList.add('show');
+    document.getElementById('bulkcnt').textContent=n+' cell'+(n>1?'s':'')+' selected'; }
+  else bar.classList.remove('show');
+}
+function toggleSel(id,mi){ const k=keyOf(id,mi); selection.has(k)?selection.delete(k):selection.add(k); paintSel(); }
+function addSel(id,mi){ selection.add(keyOf(id,mi)); paintSel(); }
+function clearSel(){ selection.clear(); paintSel(); }
+function selectRange(a,b){
+  selection.clear();
+  const r0=visIds.indexOf(a.id), r1=visIds.indexOf(b.id); if(r0<0||r1<0) return;
+  const rlo=Math.min(r0,r1), rhi=Math.max(r0,r1), clo=Math.min(a.mi,b.mi), chi=Math.max(a.mi,b.mi);
+  for(let r=rlo;r<=rhi;r++) for(let m=clo;m<=chi;m++) selection.add(keyOf(visIds[r],m));
+  paintSel();
+}
+function onCellDown(e){
+  if(mode!=='edit'||e.button!==0) return;
+  const td=e.currentTarget, id=td.dataset.id, mi=+td.dataset.mi;
+  e.preventDefault();
+  if(e.shiftKey && lastClicked){ selectRange(lastClicked,{id,mi}); moved=true; dragging=false; lastClicked={id,mi}; return; }
+  if(e.ctrlKey||e.metaKey||selectMode){ toggleSel(id,mi); dragging=true; dragAnchor={id,mi}; moved=true; lastClicked={id,mi}; return; }
+  dragging=true; dragAnchor={id,mi}; moved=false; lastClicked={id,mi};
+}
+function onCellEnter(e){
+  if(!dragging) return;
+  const td=e.currentTarget, id=td.dataset.id, mi=+td.dataset.mi;
+  if(selectMode||e.ctrlKey||e.metaKey){ addSel(id,mi); moved=true; }
+  else { selectRange(dragAnchor,{id,mi}); moved=true; }
+}
+function onCellTouch(e){
+  if(mode!=='edit'||!selectMode) return;
+  const td=e.currentTarget; toggleSel(td.dataset.id,+td.dataset.mi);
+}
+function onGlobalUp(){
+  if(!dragging) return;
+  dragging=false;
+  if(!moved && !selectMode && dragAnchor){
+    const {id,mi}=dragAnchor; const el=cellEl(id,mi); clearSel(); if(el) openCell(id,mi,el);
+  }
+}
+/* ---------- bulk apply ---------- */
+function applyBulkStatus(s){
+  if(!selection.size) return;
+  const n=selection.size;
+  selection.forEach(k=>{ const [id,mi]=k.split('|'); const it=state.items.find(i=>i.id===id); if(it) it.cells[+mi][1]=s; });
+  save(); selection.clear(); render(); toast(n+' cell'+(n>1?'s':'')+' set to '+SLABEL[s]);
+}
+function bulkSetAmount(){
+  if(!selection.size) return;
+  const n=selection.size;
+  openModal('<h3>Set amount for '+n+' cell'+(n>1?'s':'')+'</h3><p>Applies the same value to every selected cell. Status is unchanged.</p>'
+    +'<label>Amount (AUD)</label><input id="ba" inputmode="numeric" placeholder="0">'
+    +'<div class="actions"><button class="btn" data-close>Cancel</button><button class="btn primary" id="bago">Apply</button></div>');
+  document.getElementById('bago').onclick=()=>{
+    const v=Math.round(parseFloat(document.getElementById('ba').value.replace(/[^0-9.-]/g,''))||0);
+    selection.forEach(k=>{ const [id,mi]=k.split('|'); const it=state.items.find(i=>i.id===id); if(it) it.cells[+mi][0]=v; });
+    save(); selection.clear(); closeModal(); render(); toast(n+' cell'+(n>1?'s':'')+' set to '+fmt(v));
+  };
+  document.getElementById('ba').focus();
+}
+
+/* ============================ CELL EDITOR ============================ */
+let editing=null;
+function openCell(id,mi,el){
+  const it=state.items.find(i=>i.id===id); if(!it) return;
+  editing={id,mi};
+  const cell=it.cells[mi];
+  const pop=document.getElementById('pop');
+  document.getElementById('poplbl').textContent=it.partner;
+  document.getElementById('popctx').textContent=MONTHS[mi]+' · '+it.code;
+  const amt=document.getElementById('popamt'); amt.value=cell[0]||'';
+  pop.querySelectorAll('.statuspick button').forEach(b=>b.classList.toggle('on',b.dataset.s===cell[1]));
+  pop.dataset.status=cell[1];
+  pop.classList.add('open');
+  const r=el.getBoundingClientRect(), pw=250, ph=pop.offsetHeight;
+  let x=r.left, y=r.bottom+6;
+  if(x+pw>window.innerWidth-12) x=window.innerWidth-pw-12;
+  if(y+ph>window.innerHeight-12) y=r.top-ph-6;
+  pop.style.left=Math.max(12,x)+'px'; pop.style.top=Math.max(12,y)+'px';
+  amt.focus(); amt.select();
+}
+function closeCell(){ document.getElementById('pop').classList.remove('open'); editing=null; }
+function commitCell(){
+  if(!editing) return;
+  const it=state.items.find(i=>i.id===editing.id);
+  const raw=document.getElementById('popamt').value.replace(/[^0-9.-]/g,'');
+  const val=Math.round(parseFloat(raw)||0);
+  const st=document.getElementById('pop').dataset.status||'intended';
+  it.cells[editing.mi]=[val,st];
+  save(); closeCell(); render();
+}
+
+/* ============================ BULK TAGGING ============================ */
+function bulkColumn(cat,mi){
+  chooseStatus('Tag '+MONTHS[mi]+' — '+titlecase(cat),'Set the status for every '+MONTHS[mi]+' cell in this category.',s=>{
+    catItems(cat).forEach(it=>{ it.cells[mi][1]=s; });
+    save(); render(); toast('Tagged '+MONTHS[mi]+' as '+SLABEL[s]);
+  });
+}
+function bulkRow(id){
+  const it=state.items.find(i=>i.id===id);
+  chooseStatus('Tag whole row — '+it.partner,'Set the status for all 12 months of this line item.',s=>{
+    it.cells.forEach(c=>c[1]=s); save(); render(); toast(it.partner+' tagged '+SLABEL[s]);
+  });
+}
+function chooseStatus(title,desc,cb){
+  openModal('<h3>'+esc(title)+'</h3><p>'+esc(desc)+'</p>'
+    +'<div class="statuspick" id="msp">'+STATUSES.map(s=>'<button data-s="'+s+'">'+SLABEL[s]+'</button>').join('')+'</div>'
+    +'<div class="actions"><button class="btn" data-close>Cancel</button></div>');
+  document.querySelectorAll('#msp button').forEach(b=>b.onclick=()=>{ closeModal(); cb(b.dataset.s); });
+}
+
+/* ============================ ADD / DELETE / RESET ============================ */
+function addItem(cat){
+  openModal('<h3>Add line item</h3><p>New line in '+esc(titlecase(cat))+'. Amounts start at zero and tagged Intended.</p>'
+    +'<label>Partner / description</label><input id="ap" placeholder="e.g. New Partner">'
+    +'<label>Billing code</label><input id="ac" placeholder="e.g. 64380">'
+    +'<label>Type (optional)</label><input id="at" placeholder="e.g. Brand Digital & Display">'
+    +'<div class="actions"><button class="btn" data-close>Cancel</button>'
+    +'<button class="btn primary" id="asave">Add line</button></div>');
+  document.getElementById('asave').onclick=()=>{
+    const p=document.getElementById('ap').value.trim(); if(!p){ toast('Enter a partner name'); return; }
+    const id='ln'+Date.now();
+    state.items.push({id,cat,code:document.getElementById('ac').value.trim()||'—',
+      type:document.getElementById('at').value.trim(),partner:p,
+      cells:Array.from({length:12},()=>[0,'intended'])});
+    save(); closeModal(); render(); toast('Line item added');
+  };
+}
+function delItem(id){
+  const it=state.items.find(i=>i.id===id);
+  openModal('<h3>Delete line item?</h3><p>“'+esc(it.partner)+'” and its 12 months will be removed.</p>'
+    +'<div class="actions"><button class="btn" data-close>Cancel</button>'
+    +'<button class="btn" style="border-color:var(--danger);color:var(--danger)" id="dyes">Delete</button></div>');
+  document.getElementById('dyes').onclick=()=>{
+    state.items=state.items.filter(i=>i.id!==id); if(dbEnabled) dbDeleteRow(id); save(); closeModal(); render(); toast('Line deleted');
+  };
+}
+function resetAll(){
+  openModal('<h3>Reset to original figures?</h3><p>This restores the JPFY27 figures this file shipped with and clears every status tag and edit'+(dbEnabled?' in the shared database (affects everyone)':' on this device')+'.</p>'
+    +'<div class="actions"><button class="btn" data-close>Cancel</button>'
+    +'<button class="btn" style="border-color:var(--danger);color:var(--danger)" id="ryes">Reset</button></div>');
+  document.getElementById('ryes').onclick=()=>{ closeModal();
+    if(dbEnabled){ dbReplaceAll(freshFromSeed().items).then(()=>toast('Reset to original')); }
+    else { state=freshFromSeed(); save(); render(); toast('Reset to original'); }
+  };
+}
+
+/* ============================ AUTO-TAG ============================ */
+function autoTag(){
+  openModal('<h3>Auto-tag by month</h3><p>A quick starting point you can fine-tune afterwards. Choose a cut-off — months before it become one status, months from it another.</p>'
+    +'<label>Months up to and including</label><select id="cut">'+MONTHS.map((m,i)=>'<option value="'+i+'"'+(i===3?' selected':'')+'>'+m+'</option>').join('')+'</select>'
+    +'<label>Tag those months as</label><select id="before"><option value="spent">Spent</option><option value="committed">Committed</option><option value="intended">Intended</option></select>'
+    +'<label>Tag later months as</label><select id="after"><option value="committed">Committed</option><option value="intended" selected>Intended</option><option value="spent">Spent</option></select>'
+    +'<div class="actions"><button class="btn" data-close>Cancel</button><button class="btn primary" id="atgo">Apply</button></div>');
+  document.getElementById('atgo').onclick=()=>{
+    const cut=+document.getElementById('cut').value, b=document.getElementById('before').value, a=document.getElementById('after').value;
+    state.items.forEach(it=>it.cells.forEach((c,mi)=>{ c[1]= mi<=cut?b:a; }));
+    save(); closeModal(); render(); toast('Auto-tagged by month');
+  };
+}
+
+/* ============================ MODE / LOCK ============================ */
+function setMode(m){
+  mode=m;
+  document.body.classList.toggle('viewmode',m==='view');
+  document.body.classList.toggle('editmode',m==='edit');
+  if(m==='view'){ selection.clear(); selectMode=false; }
+  const badge=document.getElementById('modebadge');
+  badge.textContent=m==='view'?'View':'Edit'; badge.className='modebadge '+(m==='view'?'view':'edit');
+  document.getElementById('modebtn').textContent=m==='view'?'Edit':'Done editing';
+  render();
+}
+function toggleMode(){
+  if(mode==='view' && state.passcode){
+    // require passcode to enter edit
+    promptPass('Enter passcode to edit',()=>setMode('edit'));
+  } else setMode(mode==='view'?'edit':'view');
+}
+function promptPass(title,ok){
+  openModal('<h3>'+esc(title)+'</h3><p>Passcode protects editing on this device.</p>'
+    +'<input type="password" id="pp" placeholder="Passcode" style="text-align:center">'
+    +'<div style="color:var(--danger);font-size:12px;height:14px;margin-top:6px" id="pperr"></div>'
+    +'<div class="actions"><button class="btn" data-close>Cancel</button><button class="btn primary" id="ppgo">Unlock</button></div>');
+  const go=()=>{ if(document.getElementById('pp').value===state.passcode){closeModal();ok();} else document.getElementById('pperr').textContent='Incorrect passcode'; };
+  document.getElementById('ppgo').onclick=go;
+  document.getElementById('pp').onkeydown=e=>{if(e.key==='Enter')go();};
+  document.getElementById('pp').focus();
+}
+function setPasscode(){
+  openModal('<h3>Set / change passcode</h3><p>Leave blank and save to remove protection. Note: this is access friction on this device, not encryption — the export file is not password-protected.</p>'
+    +'<label>New passcode</label><input type="password" id="np" placeholder="(blank = none)">'
+    +'<div class="actions"><button class="btn" data-close>Cancel</button><button class="btn primary" id="npgo">Save</button></div>');
+  document.getElementById('npgo').onclick=()=>{
+    state.passcode=document.getElementById('np').value||null; save(); closeModal();
+    toast(state.passcode?'Passcode set':'Passcode removed');
+  };
+}
+
+/* ============================ EXPORT / IMPORT ============================ */
+function flatRows(){
+  const rows=[];
+  state.items.forEach(it=>it.cells.forEach((c,mi)=>{
+    if(c[0]||c[1]!=='intended') rows.push({Category:it.cat,Code:it.code,Type:it.type,Partner:it.partner,
+      Month:MONTHS[mi],Amount:c[0]||0,Status:SLABEL[c[1]]});
+  }));
+  return rows;
+}
+function exportJson(){
+  dl(new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),'PBA_Budget_JPFY27_data.json');
+  toast('Data exported');
+}
+function importJson(){ document.getElementById('fileinput').click(); }
+function exportCsv(){
+  const items=state.items;
+  let head=['Category','Code','Type','Partner',...MONTHS.map(m=>m+' $'),...MONTHS.map(m=>m+' status'),'Total'];
+  let lines=[head.join(',')];
+  items.forEach(it=>{
+    const r=[it.cat,it.code,it.type,it.partner];
+    it.cells.forEach(c=>r.push(c[0]||0));
+    it.cells.forEach(c=>r.push(SLABEL[c[1]]));
+    r.push(itemTotal(it));
+    lines.push(r.map(v=>{v=String(v==null?'':v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}).join(','));
+  });
+  dl(new Blob([lines.join('\n')],{type:'text/csv'}),'PBA_Budget_JPFY27.csv');
+  toast('CSV exported');
+}
+function exportXlsx(){
+  if(typeof XLSX==='undefined'){ toast('Excel library offline — exporting CSV instead'); exportCsv(); return; }
+  const wb=XLSX.utils.book_new();
+  // Detail sheet
+  const head=['Category','Code','Type','Partner',...MONTHS,'Total'];
+  const aoa=[head];
+  state.items.forEach(it=>{ aoa.push([it.cat,it.code,it.type,it.partner,...it.cells.map(c=>c[0]||0),itemTotal(it)]); });
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(aoa),'Detail $');
+  // Status sheet
+  const sh=[head]; state.items.forEach(it=>{ sh.push([it.cat,it.code,it.type,it.partner,...it.cells.map(c=>SLABEL[c[1]]),'']); });
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sh),'Status');
+  // Overview sheet
+  const g=totalsFor(state.items);
+  const ov=[['Category','Spent','Committed','Intended','Total']];
+  CATS.forEach(cat=>{const t=totalsFor(catItems(cat)); ov.push([cat,t.spent,t.committed,t.intended,t.total]);});
+  ov.push(['TOTAL',g.spent,g.committed,g.intended,g.total]);
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(ov),'Overview');
+  XLSX.writeFile(wb,'PBA_Budget_JPFY27.xlsx');
+  toast('Excel exported');
+}
+function dl(blob,name){ const u=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000); }
+
+/* ============================ MODAL / TOAST / MISC ============================ */
+function openModal(html){ const m=document.getElementById('modal'); m.innerHTML=html;
+  document.getElementById('scrim').classList.add('open');
+  m.querySelectorAll('[data-close]').forEach(b=>b.onclick=closeModal); }
+function closeModal(){ document.getElementById('scrim').classList.remove('open'); }
+let toastT;
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2200); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function dismissHint(){ localStorage.setItem(KEY+'_hintseen','1'); render(); }
+function closeSide(){ document.getElementById('side').classList.remove('open'); }
+
+/* ============================ WIRING ============================ */
+function boot(){
+  state=load();
+  if(!state.items){ state=freshFromSeed(); }
+  // lock screen
+  if(state.passcode){
+    const ls=document.getElementById('lockscreen'); ls.classList.add('open');
+    const go=()=>{ if(document.getElementById('lockinput').value===state.passcode){ ls.classList.remove('open'); }
+      else document.getElementById('lockerr').textContent='Incorrect passcode'; };
+    document.getElementById('lockgo').onclick=go;
+    document.getElementById('lockinput').onkeydown=e=>{if(e.key==='Enter')go();};
+    document.getElementById('lockinput').focus();
+  }
+  render(); flashSaved();
+
+  // auto-connect to database if configured previously
+  const cfg=sbConfig();
+  if(cfg&&cfg.url&&cfg.key){ syncChip('syncing'); connectDb(cfg,false); }
+
+  document.getElementById('search').oninput=e=>{ query=e.target.value.trim(); if(view!=='overview') renderCategory(view); };
+  document.querySelectorAll('#statusfilter button').forEach(b=>b.onclick=()=>{
+    filter=b.dataset.s; document.querySelectorAll('#statusfilter button').forEach(x=>x.classList.toggle('on',x===b));
+    render();
+  });
+  document.getElementById('modebtn').onclick=toggleMode;
+  document.getElementById('menutoggle').onclick=()=>document.getElementById('side').classList.toggle('open');
+
+  // more menu
+  const morepop=document.getElementById('morepop');
+  document.getElementById('morebtn').onclick=e=>{ e.stopPropagation(); morepop.classList.toggle('open'); };
+  document.addEventListener('click',()=>morepop.classList.remove('open'));
+  morepop.addEventListener('click',e=>e.stopPropagation());
+  morepop.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    morepop.classList.remove('open');
+    const a=b.dataset.act;
+    if(a==='connectdb'){ connectModal(); }
+    else if(a==='autotag'){ requireEdit(autoTag); }
+    else if(a==='collapse'){ collapsed=!collapsed; render(); }
+    else if(a==='expJson') exportJson();
+    else if(a==='impJson') importJson();
+    else if(a==='expXlsx') exportXlsx();
+    else if(a==='expCsv') exportCsv();
+    else if(a==='lock') setPasscode();
+    else if(a==='reset') requireEdit(resetAll);
+  });
+
+  // cell popover
+  document.getElementById('popsave').onclick=commitCell;
+  document.getElementById('popcancel').onclick=closeCell;
+  document.getElementById('popamt').onkeydown=e=>{ if(e.key==='Enter')commitCell(); if(e.key==='Escape')closeCell(); };
+  document.querySelectorAll('#pop .statuspick button').forEach(b=>b.onclick=()=>{
+    document.getElementById('pop').dataset.status=b.dataset.s;
+    document.querySelectorAll('#pop .statuspick button').forEach(x=>x.classList.toggle('on',x===b));
+  });
+  document.addEventListener('click',e=>{ const pop=document.getElementById('pop');
+    if(pop.classList.contains('open') && !pop.contains(e.target) && !e.target.closest('td.cell')) closeCell(); });
+
+  // import file
+  document.getElementById('fileinput').onchange=e=>{
+    const f=e.target.files[0]; if(!f)return; const rd=new FileReader();
+    rd.onload=()=>{ try{ const obj=JSON.parse(rd.result);
+      if(!obj.items) throw 0;
+      if(dbEnabled){ dbReplaceAll(obj.items).then(()=>toast('Data imported to database')); }
+      else { state=obj; save(); render(); toast('Data imported'); }
+    }catch(err){ toast('Could not read that file'); } e.target.value=''; };
+    rd.readAsText(f);
+  };
+
+  document.getElementById('scrim').onclick=e=>{ if(e.target.id==='scrim') closeModal(); };
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeModal(); closeCell(); clearSel(); } });
+
+  // selection: global mouseup + bulk bar
+  document.addEventListener('mouseup',onGlobalUp);
+  document.querySelectorAll('#bulkbar .sb').forEach(b=>b.onclick=()=>applyBulkStatus(b.dataset.s));
+  document.getElementById('bulkclear').onclick=()=>clearSel();
+  document.getElementById('bulkamt').onclick=bulkSetAmount;
+}
+function requireEdit(fn){
+  if(mode!=='edit'){ if(state.passcode){ promptPass('Enter passcode to edit',()=>{setMode('edit');fn();}); return; } setMode('edit'); }
+  fn();
+}
+boot();
+</script>
+</body>
+</html>
