@@ -118,6 +118,8 @@
   .panel-h{display:flex;align-items:center;justify-content:space-between;gap:12px;
            padding:14px 18px;border-bottom:1px solid var(--line)}
   .panel-h h2{font-size:14px;margin:0;font-weight:700;letter-spacing:-.01em}
+  .panel-h .btn{padding:6px 10px;font-size:12px;font-weight:600}
+  .panel-h .hgroup{display:flex;gap:10px;align-items:center}
   .panel-h .sub{font-size:11.5px;color:var(--muted)}
   .scroll{overflow-x:auto}
   table{border-collapse:collapse;width:100%;font-size:12.5px}
@@ -370,7 +372,7 @@ const CATS = ["TV", "TV PRODUCTION", "RADIO", "OOH", "DIGITAL PARTNERS", "SOCIAL
 const SEED = {"items":[{"id":"ln1","cat":"TV","code":"64310","type":"Brand TV","partner":"Fox Footy TVCs","cells":[[177700,"spent"],[177950,"spent"],[213400,"spent"],[222550,"committed"],[193950,"committed"],[217350,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[194800,"intended"]]},{"id":"ln2","cat":"TV","code":"64310","type":"Brand TV","partner":"Fox Footy Integration","cells":[[123960,"spent"],[108090,"spent"],[103200,"spent"],[287000,"committed"],[280000,"committed"],[274150,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[103050,"intended"]]},{"id":"ln3","cat":"TV","code":"64310","type":"Brand TV","partner":"Footy Furance - Jam TV","cells":[[100000,"spent"],[0,"intended"],[0,"intended"],[50000,"committed"],[100000,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln4","cat":"TV","code":"64310","type":"Brand TV","partner":"ESPN(American Sports)","cells":[[160718,"spent"],[160718,"spent"],[160718,"spent"],[152500,"committed"],[152500,"committed"],[152500,"committed"],[152500,"committed"],[152500,"committed"],[152500,"committed"],[158333,"intended"],[160718,"intended"],[160718,"intended"]]},{"id":"ln5","cat":"TV","code":"64310","type":"Brand TV","partner":"FoxLeague (Package)","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln6","cat":"TV","code":"64310","type":"Brand TV","partner":"RDC","cells":[[83333,"spent"],[83333,"spent"],[83333,"spent"],[71000,"intended"],[75000,"intended"],[75000,"intended"],[75000,"intended"],[75000,"intended"],[75000,"intended"],[75000,"intended"],[75000,"intended"],[75000,"intended"]]},{"id":"ln7","cat":"TV","code":"64310","type":"Brand TV","partner":"contingency","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln8","cat":"TV PRODUCTION","code":"64330","type":"Brand Acquisition Production (Incl Agency Fees)","partner":"FoxFooty Production","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[50000,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln9","cat":"TV PRODUCTION","code":"64330","type":"Brand Acquisition Production (Incl Agency Fees)","partner":"ESPN Production","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[40000,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln10","cat":"RADIO","code":"64320","type":"Brand Radio","partner":"Triple M - Brisbane Breakfast/Cricket","cells":[[20000,"spent"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln11","cat":"RADIO","code":"64320","type":"Brand Radio","partner":"Triple M - Sydney Breakfast","cells":[[26100,"spent"],[26100,"spent"],[26100,"spent"],[26100,"committed"],[26100,"committed"],[26100,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[26100,"intended"]]},{"id":"ln12","cat":"RADIO","code":"64320","type":"Brand Radio","partner":"SEN AFL Nation","cells":[[45000,"spent"],[35000,"spent"],[30125,"spent"],[25000,"committed"],[55000,"committed"],[35000,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln13","cat":"RADIO","code":"64320","type":"Brand Radio","partner":"Nine Radio Network","cells":[[0,"intended"],[55000,"spent"],[40000,"spent"],[40000,"committed"],[50000,"committed"],[50000,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln14","cat":"RADIO","code":"64320","type":"Brand Radio","partner":"SEN League (Sat Kickoff 2026)","cells":[[17500,"spent"],[17500,"spent"],[17500,"spent"],[17500,"committed"],[17500,"committed"],[17500,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln15","cat":"OOH","code":"64360","type":"Brand OOH & Print","partner":"QMS - DOOH","cells":[[15000,"spent"],[15000,"spent"],[15000,"spent"],[15000,"committed"],[15000,"committed"],[15000,"committed"],[15000,"intended"],[15000,"intended"],[15000,"intended"],[15000,"intended"],[15000,"intended"],[15000,"intended"]]},{"id":"ln16","cat":"DIGITAL PARTNERS","code":"64380","type":"Brand Digital & Display","partner":"Racing.com","cells":[[59625,"spent"],[71614,"spent"],[39214,"spent"],[14893,"intended"],[9652,"intended"],[12137,"intended"],[14823,"intended"],[13837,"intended"],[3009,"intended"],[11165,"intended"],[8214,"intended"],[11379,"intended"]]},{"id":"ln17","cat":"DIGITAL PARTNERS","code":"64380","type":"Brand Digital & Display","partner":"ESPN","cells":[[187500,"spent"],[187500,"spent"],[187500,"spent"],[187500,"committed"],[187500,"committed"],[187500,"committed"],[187500,"committed"],[187500,"committed"],[187500,"committed"],[187500,"committed"],[187500,"committed"],[187500,"committed"]]},{"id":"ln18","cat":"DIGITAL PARTNERS","code":"64380","type":"Brand Digital & Display","partner":"ESPN Footytips","cells":[[81662,"spent"],[81662,"spent"],[81662,"spent"],[81662,"committed"],[81662,"committed"],[81662,"committed"],[81662,"committed"],[81662,"committed"],[81662,"committed"],[81662,"committed"],[81662,"committed"],[81662,"committed"]]},{"id":"ln19","cat":"DIGITAL PARTNERS","code":"64380","type":"Brand Digital & Display","partner":"Fox League.com","cells":[[70000,"spent"],[70000,"spent"],[75000,"spent"],[70000,"committed"],[70000,"committed"],[60000,"committed"],[5000,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[80000,"intended"]]},{"id":"ln20","cat":"DIGITAL PARTNERS","code":"64380","type":"Brand Digital & Display","partner":"Fox League Social","cells":[[70000,"spent"],[70000,"spent"],[70000,"spent"],[70000,"committed"],[70000,"committed"],[70000,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[80000,"intended"]]},{"id":"ln21","cat":"DIGITAL PARTNERS","code":"64380","type":"Brand Digital & Display","partner":"Fox Footy Streaming","cells":[[200000,"spent"],[200000,"spent"],[200000,"spent"],[200000,"committed"],[200000,"committed"],[200000,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[200000,"intended"]]},{"id":"ln22","cat":"DIGITAL PARTNERS","code":"64380","type":"Brand Digital & Display","partner":"Fox Footy.com","cells":[[70000,"spent"],[70000,"spent"],[70000,"spent"],[70000,"committed"],[70000,"committed"],[70000,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[80000,"intended"]]},{"id":"ln23","cat":"DIGITAL PARTNERS","code":"64380","type":"Brand Digital & Display","partner":"Fox Footy Social","cells":[[65000,"spent"],[65000,"spent"],[65000,"spent"],[65000,"committed"],[65000,"committed"],[65000,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[70000,"intended"]]},{"id":"ln24","cat":"DIGITAL PARTNERS","code":"64380","type":"Brand Digital & Display","partner":"GreyHound Recorder","cells":[[10000,"spent"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln25","cat":"DIGITAL PARTNERS","code":"64380","type":"Brand Digital & Display","partner":"FotMob","cells":[[17500,"spent"],[0,"intended"],[32000,"spent"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln26","cat":"SOCIAL","code":"64050","type":"Acquisition Paid Social (Facebook)","partner":"Meta","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[148147,"intended"],[105323,"intended"],[380000,"intended"],[423948,"intended"],[316567,"intended"],[80235,"intended"],[79664,"intended"],[135632,"intended"],[141018,"intended"]]},{"id":"ln27","cat":"SOCIAL","code":"64060","type":"Acquisition Paid Social (Other)","partner":"TikTok","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[68393,"intended"],[58374,"intended"],[150648,"intended"],[167320,"intended"],[122200,"intended"],[30396,"intended"],[30393,"intended"],[77818,"intended"],[60302,"intended"]]},{"id":"ln28","cat":"SOCIAL","code":"64060","type":"Acquisition Paid Social (Other)","partner":"Snap","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[17331,"intended"],[18133,"intended"],[22357,"intended"],[31295,"intended"],[24173,"intended"],[7258,"intended"],[8305,"intended"],[17388,"intended"],[17528,"intended"]]},{"id":"ln29","cat":"SOCIAL","code":"64060","type":"Acquisition Paid Social (Other)","partner":"Reddit","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[16144,"intended"],[16891,"intended"],[20771,"intended"],[49165,"intended"],[21147,"intended"],[5487,"intended"],[5531,"intended"],[17518,"intended"],[17073,"intended"]]},{"id":"ln30","cat":"SOCIAL","code":"64040","type":"Acquisition Paid Social (Twitter)","partner":"X","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln31","cat":"SOCIAL","code":"RECON","type":"Reconciled total (not split by line)","partner":"Reconciled actual","cells":[[219863,"spent"],[235144,"spent"],[490447,"spent"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln32","cat":"SEM","code":"64010","type":"Acquisition SEM","partner":"Google","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[332234,"intended"],[223830,"intended"],[495774,"intended"],[410207,"intended"],[499317,"intended"],[114606,"intended"],[120937,"intended"],[109650,"intended"],[273324,"intended"]]},{"id":"ln33","cat":"SEM","code":"64010","type":"Acquisition SEM","partner":"Apple Search","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[74610,"intended"],[165258,"intended"],[136736,"intended"],[166439,"intended"],[38202,"intended"],[40312,"intended"],[36550,"intended"],[91108,"intended"]]},{"id":"ln34","cat":"SEM","code":"64010","type":"Acquisition SEM","partner":"Bing","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln35","cat":"SEM","code":"RECON","type":"Reconciled total (not split by line)","partner":"Reconciled actual","cells":[[425902,"spent"],[403739,"spent"],[656344,"spent"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln36","cat":"PROGRAMMATIC","code":"64020","type":"Acquisition Display, Content & Email","partner":"BVOD","cells":[[23341,"spent"],[0,"intended"],[124613,"spent"],[36000,"spent"],[0,"intended"],[272500,"intended"],[155000,"intended"],[135000,"intended"],[0,"intended"],[0,"intended"],[52176,"intended"],[105315,"intended"]]},{"id":"ln37","cat":"PROGRAMMATIC","code":"64020","type":"Acquisition Display, Content & Email","partner":"SF Video","cells":[[66879,"spent"],[15130,"spent"],[31614,"spent"],[24100,"spent"],[0,"intended"],[68000,"intended"],[61723,"intended"],[55000,"intended"],[0,"intended"],[20000,"intended"],[30184,"intended"],[81500,"intended"]]},{"id":"ln38","cat":"PROGRAMMATIC","code":"64020","type":"Acquisition Display, Content & Email","partner":"Display - Broadcast","cells":[[109246,"spent"],[20801,"spent"],[51439,"spent"],[28656,"spent"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln39","cat":"PROGRAMMATIC","code":"64020","type":"Acquisition Display, Content & Email","partner":"Display - Performance","cells":[[35208,"spent"],[19993,"spent"],[32699,"spent"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[45000,"intended"],[50000,"intended"]]},{"id":"ln40","cat":"PROGRAMMATIC","code":"64020","type":"Acquisition Display, Content & Email","partner":"Racing.com PG","cells":[[29928,"spent"],[19182,"spent"],[6637,"spent"],[12500,"intended"],[16988,"intended"],[20385,"intended"],[20385,"intended"],[13590,"intended"],[3398,"intended"],[3398,"intended"],[16988,"intended"],[20385,"intended"]]},{"id":"ln41","cat":"PROGRAMMATIC","code":"64020","type":"Acquisition Display, Content & Email","partner":"Motio - DOOH","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln42","cat":"PROGRAMMATIC","code":"64020","type":"Acquisition Display, Content & Email","partner":"QMS - DOOH","cells":[[25000,"spent"],[25000,"spent"],[25000,"spent"],[25000,"committed"],[25000,"committed"],[25000,"committed"],[25000,"intended"],[25000,"intended"],[25000,"intended"],[25000,"intended"],[25000,"intended"],[25000,"intended"]]},{"id":"ln43","cat":"PROGRAMMATIC","code":"64020","type":"Acquisition Display, Content & Email","partner":"YouTube","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln44","cat":"PROGRAMMATIC","code":"64020","type":"Acquisition Display, Content & Email","partner":"Contingency","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln45","cat":"AMBASSADORS","code":"64400","type":"Brand Ambassadors","partner":"Ash Wicks","cells":[[10000,"spent"],[10000,"spent"],[10000,"spent"],[10000,"committed"],[10000,"committed"],[10000,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln46","cat":"AMBASSADORS","code":"64400","type":"Brand Ambassadors","partner":"Jules Vallance","cells":[[23500,"spent"],[23500,"spent"],[23500,"spent"],[23500,"committed"],[23500,"committed"],[23500,"committed"],[23500,"committed"],[23500,"committed"],[23500,"committed"],[23500,"committed"],[23500,"committed"],[23500,"committed"]]},{"id":"ln47","cat":"AMBASSADORS","code":"64400","type":"Brand Ambassadors","partner":"Daisy Thomas","cells":[[22950,"spent"],[22950,"spent"],[22950,"spent"],[22950,"committed"],[22950,"committed"],[22950,"committed"],[22950,"committed"],[22950,"committed"],[22950,"committed"],[22950,"committed"],[22950,"committed"],[22950,"committed"]]},{"id":"ln48","cat":"AMBASSADORS","code":"64400","type":"Brand Ambassadors","partner":"Tom Mitchell","cells":[[11500,"spent"],[11500,"spent"],[11500,"spent"],[11500,"committed"],[11500,"committed"],[11500,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[11500,"intended"]]},{"id":"ln49","cat":"AMBASSADORS","code":"64400","type":"Brand Ambassadors","partner":"Nic Ashman","cells":[[15000,"spent"],[15000,"spent"],[15000,"spent"],[17000,"committed"],[15000,"committed"],[15000,"committed"],[15000,"committed"],[15000,"committed"],[15000,"committed"],[15000,"committed"],[15000,"committed"],[15000,"committed"]]},{"id":"ln50","cat":"AMBASSADORS","code":"64400","type":"Brand Ambassadors","partner":"Bernie Vince","cells":[[8200,"spent"],[8200,"spent"],[8200,"spent"],[8200,"committed"],[8200,"committed"],[8200,"committed"],[8200,"committed"],[8200,"committed"],[8200,"committed"],[0,"intended"],[8200,"intended"],[8200,"intended"]]},{"id":"ln51","cat":"AMBASSADORS","code":"64400","type":"Brand Ambassadors","partner":"Aaron Woods","cells":[[16000,"spent"],[16000,"spent"],[16000,"spent"],[16000,"committed"],[16000,"committed"],[16000,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[16000,"intended"]]},{"id":"ln52","cat":"AMBASSADORS","code":"64400","type":"Brand Ambassadors","partner":"Shaq","cells":[[144000,"spent"],[144000,"spent"],[144000,"spent"],[126000,"intended"],[126000,"intended"],[144000,"intended"],[144000,"intended"],[144000,"intended"],[144000,"intended"],[144000,"intended"],[144000,"intended"],[0,"intended"]]},{"id":"ln53","cat":"AMBASSADORS","code":"64400","type":"Brand Ambassadors","partner":"Arryn Siposs","cells":[[1200,"spent"],[1200,"spent"],[1200,"spent"],[1200,"committed"],[11200,"committed"],[11200,"committed"],[10000,"committed"],[10000,"committed"],[10000,"committed"],[20000,"committed"],[0,"intended"],[0,"intended"]]},{"id":"ln54","cat":"SOCIAL MEDIA CREATORS","code":"64365","type":"Brand Social Media","partner":"Liam Stapleton","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[50000,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln55","cat":"SOCIAL MEDIA CREATORS","code":"64365","type":"Brand Social Media","partner":"100k Sports","cells":[[13958,"spent"],[13958,"spent"],[13958,"spent"],[13958,"committed"],[13958,"committed"],[13958,"committed"],[13958,"committed"],[13958,"committed"],[13958,"committed"],[13958,"committed"],[13958,"committed"],[13958,"committed"]]},{"id":"ln56","cat":"SOCIAL MEDIA CREATORS","code":"64365","type":"Brand Social Media","partner":"28 Year Old Male","cells":[[17500,"spent"],[17500,"spent"],[17500,"spent"],[17500,"committed"],[17500,"committed"],[17500,"committed"],[17500,"committed"],[17500,"committed"],[17500,"committed"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln57","cat":"SOCIAL MEDIA CREATORS","code":"64365","type":"Brand Social Media","partner":"Chocs Chat","cells":[[10833,"spent"],[10833,"spent"],[10833,"spent"],[10833,"committed"],[10833,"committed"],[10833,"committed"],[10833,"committed"],[10833,"committed"],[10833,"committed"],[10833,"intended"],[10833,"intended"],[10833,"intended"]]},{"id":"ln58","cat":"SOCIAL MEDIA CREATORS","code":"64365","type":"Brand Social Media","partner":"Kick It Forward","cells":[[26041,"spent"],[26041,"spent"],[26041,"spent"],[26041,"committed"],[26041,"committed"],[26041,"committed"],[26041,"committed"],[26041,"committed"],[26041,"committed"],[26041,"intended"],[26041,"intended"],[26041,"intended"]]},{"id":"ln59","cat":"SOCIAL MEDIA CREATORS","code":"64365","type":"Brand Social Media","partner":"Ball Magnets (NBA)","cells":[[20000,"spent"],[20000,"spent"],[20000,"spent"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln60","cat":"SOCIAL MEDIA CREATORS","code":"64365","type":"Brand Social Media","partner":"Fanatics TV Kenty Blitz","cells":[[112500,"spent"],[0,"intended"],[112500,"spent"],[0,"intended"],[112500,"committed"],[0,"intended"],[112500,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln61","cat":"SOCIAL MEDIA CREATORS","code":"64365","type":"Brand Social Media","partner":"Sea Eagles","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[50000,"committed"],[0,"intended"],[50000,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[50000,"intended"],[50000,"intended"]]},{"id":"ln62","cat":"SOCIAL MEDIA CREATORS","code":"64365","type":"Brand Social Media","partner":"Sharks","cells":[[18750,"spent"],[18750,"spent"],[18750,"spent"],[18750,"committed"],[18750,"committed"],[18750,"committed"],[18750,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[18750,"intended"]]},{"id":"ln63","cat":"SOCIAL MEDIA CREATORS","code":"64365","type":"Brand Social Media","partner":"Currumbin Eagles","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln64","cat":"SOCIAL MEDIA CREATORS","code":"64365","type":"Brand Social Media","partner":"Fanatics TV World Cup","cells":[[0,"intended"],[0,"intended"],[45000,"spent"],[45000,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln65","cat":"SOCIAL MEDIA CREATORS","code":"64365","type":"Brand Social Media","partner":"Fanatics TV RLI & In the Moment","cells":[[0,"intended"],[0,"intended"],[40000,"spent"],[40000,"committed"],[40000,"committed"],[40000,"committed"],[40000,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln66","cat":"SOCIAL MEDIA CREATORS","code":"64365","type":"Brand Social Media","partner":"NFL Launch Activations + Event","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[50000,"intended"],[50000,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln67","cat":"AGENCIES","code":"64410","type":"Brand Agencies","partner":"Rolln Media","cells":[[30000,"spent"],[30000,"spent"],[30000,"spent"],[30000,"committed"],[30000,"committed"],[30000,"committed"],[30000,"committed"],[30000,"committed"],[30000,"committed"],[30000,"intended"],[30000,"intended"],[30000,"intended"]]},{"id":"ln68","cat":"AGENCIES","code":"64410","type":"Brand Agencies","partner":"Shannon - Hybrid Media","cells":[[15000,"spent"],[15000,"spent"],[15000,"spent"],[20000,"intended"],[20000,"intended"],[20000,"intended"],[15000,"intended"],[15000,"intended"],[15000,"intended"],[15000,"intended"],[15000,"intended"],[15000,"intended"]]},{"id":"ln69","cat":"AGENCIES","code":"64410","type":"Brand Agencies","partner":"Kantar","cells":[[10417,"spent"],[10417,"spent"],[10417,"spent"],[10417,"committed"],[10417,"committed"],[10417,"committed"],[10417,"committed"],[10417,"committed"],[10417,"committed"],[5000,"intended"],[5000,"intended"],[5000,"intended"]]},{"id":"ln70","cat":"AGENCIES","code":"64410","type":"Brand Agencies","partner":"Kinesso","cells":[[58917,"spent"],[58917,"spent"],[58917,"spent"],[58917,"committed"],[58917,"committed"],[58917,"committed"],[58917,"committed"],[58917,"committed"],[58917,"committed"],[58917,"committed"],[58917,"committed"],[58917,"committed"]]},{"id":"ln71","cat":"AGENCIES","code":"64410","type":"Brand Agencies","partner":"Enque","cells":[[50000,"spent"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln72","cat":"AGENCIES","code":"64410","type":"Brand Agencies","partner":"Jersey Legends","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[1052828,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln73","cat":"AGENCIES","code":"64410","type":"Brand Agencies","partner":"Orchestra","cells":[[12000,"spent"],[12000,"spent"],[12000,"spent"],[12000,"intended"],[12000,"intended"],[12000,"intended"],[12000,"intended"],[12000,"intended"],[12000,"intended"],[12000,"intended"],[12000,"intended"],[12000,"intended"]]},{"id":"ln74","cat":"EVENTS","code":"64370","type":"Brand Events","partner":"Tailgate Fest","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[35000,"intended"],[0,"intended"]]},{"id":"ln75","cat":"EVENTS","code":"64370","type":"Brand Events","partner":"Gather Round","cells":[[50000,"spent"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln76","cat":"EVENTS","code":"64370","type":"Brand Events","partner":"Milton SOO Game 3","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[30000,"committed"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln77","cat":"ADTECH / MARTECH","code":"64070","type":"Acquisition Digital MarTech","partner":"SA360","cells":[[5654,"spent"],[5645,"spent"],[7220,"spent"],[5710,"intended"],[6848,"intended"],[12402,"intended"],[9473,"intended"],[11582,"intended"],[3750,"intended"],[3930,"intended"],[3824,"intended"],[7308,"intended"]]},{"id":"ln78","cat":"ADTECH / MARTECH","code":"64070","type":"Acquisition Digital MarTech","partner":"FlashTalking","cells":[[14065,"spent"],[14065,"spent"],[14065,"spent"],[14065,"intended"],[14065,"intended"],[14065,"intended"],[14065,"intended"],[14065,"intended"],[14065,"intended"],[14065,"intended"],[14065,"intended"],[14065,"intended"]]},{"id":"ln79","cat":"ADTECH / MARTECH","code":"64070","type":"Acquisition Digital MarTech","partner":"Adverity","cells":[[3000,"spent"],[3000,"spent"],[3000,"spent"],[3000,"intended"],[3000,"intended"],[3000,"intended"],[3000,"intended"],[3000,"intended"],[3000,"intended"],[3000,"intended"],[3000,"intended"],[3000,"intended"]]},{"id":"ln80","cat":"ADTECH / MARTECH","code":"64070","type":"Acquisition Digital MarTech","partner":"SMS","cells":[[1750,"spent"],[1750,"spent"],[1750,"spent"],[1750,"intended"],[1750,"intended"],[1750,"intended"],[1750,"intended"],[1750,"intended"],[1750,"intended"],[1750,"intended"],[1750,"intended"],[1750,"intended"]]},{"id":"ln81","cat":"ADTECH / MARTECH","code":"64070","type":"Acquisition Digital MarTech","partner":"Peach IMD","cells":[[5000,"spent"],[5000,"spent"],[5000,"spent"],[5000,"intended"],[5000,"intended"],[5000,"intended"],[5000,"intended"],[5000,"intended"],[5000,"intended"],[5000,"intended"],[5000,"intended"],[5000,"intended"]]},{"id":"ln82","cat":"ADTECH / MARTECH","code":"64070","type":"Acquisition Digital MarTech","partner":"CAD via Hybrid Media","cells":[[5000,"spent"],[5000,"spent"],[5000,"spent"],[5000,"intended"],[5000,"intended"],[5000,"intended"],[5000,"intended"],[5000,"intended"],[5000,"intended"],[5000,"intended"],[5000,"intended"],[5000,"intended"]]},{"id":"ln83","cat":"ADTECH / MARTECH","code":"64070","type":"Acquisition Digital MarTech","partner":"Nifty Images","cells":[[1900,"spent"],[1900,"spent"],[1900,"spent"],[1900,"intended"],[1900,"intended"],[1900,"intended"],[1900,"intended"],[1900,"intended"],[1900,"intended"],[1900,"intended"],[1900,"intended"],[1900,"intended"]]},{"id":"ln84","cat":"CONTRACTORS","code":"64810","type":"Marketing Support - Contractors","partner":"Simon Legg","cells":[[15959,"intended"],[15959,"intended"],[15959,"intended"],[15959,"intended"],[15959,"intended"],[15959,"intended"],[15959,"intended"],[15959,"intended"],[15959,"intended"],[15959,"intended"],[15959,"intended"],[15959,"intended"]]},{"id":"ln85","cat":"CONTRACTORS","code":"64810","type":"Marketing Support - Contractors","partner":"Luke Morgan","cells":[[15000,"intended"],[15000,"intended"],[15000,"intended"],[15000,"intended"],[15000,"intended"],[15000,"intended"],[15000,"intended"],[15000,"intended"],[15000,"intended"],[15000,"intended"],[15000,"intended"],[15000,"intended"]]},{"id":"ln86","cat":"CONTRACTORS","code":"64810","type":"Marketing Support - Contractors","partner":"Darcy Ballard","cells":[[9240,"intended"],[9240,"intended"],[9240,"intended"],[9240,"intended"],[9240,"intended"],[9240,"intended"],[9240,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln87","cat":"AUSMERICAN ACES","code":"64365","type":"Brand Social Media","partner":"Ausmerican Aces","cells":[[46667,"committed"],[46667,"committed"],[46667,"committed"],[46667,"committed"],[46667,"committed"],[46667,"committed"],[46667,"committed"],[46667,"committed"],[46667,"committed"],[46667,"committed"],[46667,"committed"],[46667,"committed"]]},{"id":"ln88","cat":"FOXCATCHER","code":"64380","type":"Brand Digital & Display","partner":"YouTube","cells":[[6250,"spent"],[6250,"spent"],[6250,"spent"],[6250,"intended"],[6250,"intended"],[6250,"intended"],[6250,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[6250,"intended"]]},{"id":"ln89","cat":"FOXCATCHER","code":"64380","type":"Brand Digital & Display","partner":"Foxcatcher - Racing","cells":[[6429,"spent"],[6429,"spent"],[6429,"spent"],[6429,"intended"],[6429,"intended"],[6429,"intended"],[6429,"intended"],[6429,"intended"],[3214,"intended"],[0,"intended"],[3214,"intended"],[6429,"intended"]]},{"id":"ln90","cat":"STATMATE","code":"64390","type":"Brand Merchandise","partner":"StatMate Merchandise","cells":[[10000,"spent"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln91","cat":"STATMATE","code":"64050","type":"Acquisition Paid Social (Facebook)","partner":"Meta","cells":[[10000,"spent"],[10000,"spent"],[10000,"spent"],[10000,"intended"],[5000,"intended"],[5000,"intended"],[5000,"intended"],[5000,"intended"],[5000,"intended"],[5000,"intended"],[5000,"intended"],[5000,"intended"]]},{"id":"ln92","cat":"STATMATE","code":"64060","type":"Acquisition Paid Social (Other)","partner":"TikTok","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]},{"id":"ln93","cat":"STATMATE","code":"64020","type":"Acquisition Display, Content & Email","partner":"Programmatic Performance","cells":[[8844,"spent"],[12356,"spent"],[10326,"spent"],[4579,"intended"],[15040,"intended"],[2733,"intended"],[2047,"intended"],[4402,"intended"],[6162,"intended"],[2995,"intended"],[862,"intended"],[2450,"intended"]]},{"id":"ln94","cat":"STATMATE","code":"64010","type":"Acquisition SEM","partner":"Google","cells":[[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"],[0,"intended"]]}]};
 const BUILT = "2026-07-17";
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 "use strict";
@@ -576,7 +578,8 @@ function renderOverview(){
 
   // ---- 2. Monthly phasing ----
   let phasing='<div class="panel"><div class="panel-h"><h2>Monthly phasing</h2>'
-    +'<span class="sub">'+scope+', by status</span></div><div class="scroll"><table>'
+    +'<div class="hgroup"><span class="sub">'+scope+', by status</span>'
+    +'<button class="btn" data-xexport="phasing">⬇ Excel</button></div></div><div class="scroll"><table>'
     +'<thead><tr><th>Status</th>'+MONTHS.map(m=>'<th class="month">'+m+'</th>').join('')+'<th class="tot">Total</th></tr></thead><tbody>';
   STATUSES.forEach(s=>{
     const dim=(focus!=='all'&&s!==focus)?' class="dimrow"':'';
@@ -612,7 +615,8 @@ function renderOverview(){
     let cols=CATS.filter(cat=>selCats.has(cat));
     if(focus!=='all') cols=cols.slice().sort((a,b)=>totalsFor(catItems(b))[focus]-totalsFor(catItems(a))[focus]);
     catTable='<div class="panel"><div class="panel-h"><h2>By category</h2>'
-      +'<span class="sub">'+(focus!=='all'?'Ranked by '+SLABEL[focus]:'Click a category to open its detail')+'</span></div><div class="scroll"><table>'
+      +'<div class="hgroup"><span class="sub">'+(focus!=='all'?'Ranked by '+SLABEL[focus]:'Click a category to open its detail')+'</span>'
+      +'<button class="btn" data-xexport="bycat">⬇ Excel</button></div></div><div class="scroll"><table>'
       +'<thead><tr><th>Category</th>'
       +'<th class="tot'+fc('spent')+'">Spent</th><th class="tot'+fc('committed')+'">Committed</th>'
       +'<th class="tot'+fc('intended')+'">Intended</th><th class="tot">Total</th><th>Mix</th></tr></thead><tbody>';
@@ -634,6 +638,8 @@ function renderOverview(){
   // assemble in requested order: totals -> phasing -> category selection -> by category
   c.innerHTML=hint+hero+kpis+phasing+ovbar+catTable;
   c.querySelectorAll('.catrow').forEach(r=>r.onclick=()=>setView(r.dataset.cat));
+  const xb=c.querySelector('[data-xexport="bycat"]'); if(xb) xb.onclick=exportByCategoryXlsx;
+  const xp=c.querySelector('[data-xexport="phasing"]'); if(xp) xp.onclick=exportPhasingXlsx;
   wireOvChips();
 }
 function wireOvChips(){
@@ -676,9 +682,11 @@ function renderCategory(cat){
         return '<div class="seg-b '+s+'" style="width:'+w+'%">'+(w>12?fmtShort(t[s]):'')+'</div>';}).join('')
     +'</div></div>';
 
-  h+='<div class="panel"><div class="panel-h"><h2>Line items</h2>';
-  if(mode==='edit') h+='<div style="display:flex;gap:8px"><button class="btn '+(selectMode?'on':'')+'" id="selmode">'+(selectMode?'Selecting ✓':'Select cells')+'</button><button class="btn primary" id="additem">+ Add line item</button></div>';
+  h+='<div class="panel"><div class="panel-h"><h2>Line items</h2><div class="hgroup">';
+  h+='<button class="btn" data-xexport="cat">⬇ Excel</button>';
+  if(mode==='edit') h+='<button class="btn '+(selectMode?'on':'')+'" id="selmode">'+(selectMode?'Selecting ✓':'Select cells')+'</button><button class="btn primary" id="additem">+ Add line item</button>';
   else h+='<span class="sub">Switch to Edit to change figures</span>';
+  h+='</div>';
   h+='</div><div class="scroll"><table><thead><tr>'
     +'<th>Line item</th>';
   if(!collapsed){
@@ -718,6 +726,7 @@ function renderCategory(cat){
   h+='</tbody></table></div></div>';
 
   c.innerHTML=h;
+  const xc=c.querySelector('[data-xexport="cat"]'); if(xc) xc.onclick=()=>exportCategoryXlsx(cat);
 
   // wire cells for click-edit + drag/multi-select
   if(mode==='edit'){
@@ -969,28 +978,149 @@ function exportCsv(){
   dl(new Blob([lines.join('\n')],{type:'text/csv'}),'PBA_Budget_JPFY27.csv');
   toast('CSV exported');
 }
-function exportXlsx(){
-  if(typeof XLSX==='undefined'){ toast('Excel library offline — exporting CSV instead'); exportCsv(); return; }
-  const wb=XLSX.utils.book_new();
-  // Detail sheet
-  const head=['Category','Code','Type','Partner',...MONTHS,'Total'];
-  const aoa=[head];
-  state.items.forEach(it=>{ aoa.push([it.cat,it.code,it.type,it.partner,...it.cells.map(c=>c[0]||0),itemTotal(it)]); });
-  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(aoa),'Detail $');
-  // Status sheet
-  const sh=[head]; state.items.forEach(it=>{ sh.push([it.cat,it.code,it.type,it.partner,...it.cells.map(c=>SLABEL[c[1]]),'']); });
-  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sh),'Status');
+/* ---------- clean Excel export (ExcelJS) ---------- */
+const XSTYLE={
+  spent:{fill:'FFE3F1EC',font:'FF0E7C66'},
+  committed:{fill:'FFF7EEDD',font:'FFB9791C'},
+  intended:{fill:'FFE9EDF4',font:'FF5A6B90'}
+};
+const XMONEY='$#,##0;-$#,##0;"–"';
+const XINK='FF16181D', XMUTE='FF7A8290', XFAINT='FFAAB1BC', XHEADBG='FFF0F2F4', XLINE='FFCBD2DA';
+function xready(){ return typeof window.ExcelJS!=='undefined'; }
+function xfont(o){ return Object.assign({name:'Calibri',size:11,color:{argb:XINK}},o); }
+function xHeaderRow(row){ row.eachCell(c=>{ c.font=xfont({bold:true}); c.fill={type:'pattern',pattern:'solid',fgColor:{argb:XHEADBG}};
+  c.border={bottom:{style:'medium',color:{argb:XLINE}}}; c.alignment={vertical:'middle'}; }); row.height=20; }
+function xTitle(ws,text,span){ const r=ws.addRow([text]); ws.mergeCells(r.number,1,r.number,span);
+  r.getCell(1).font=xfont({size:13,bold:true}); r.height=24; ws.addRow([]); }
+function xMoney(cell,bold){ cell.numFmt=XMONEY; cell.font=xfont(bold?{bold:true}:{}); cell.alignment={horizontal:'right'}; }
+async function xSave(wb,name){ const buf=await wb.xlsx.writeBuffer();
+  dl(new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),name); }
+function xName(s){ return 'PBA_Budget_'+String(s).replace(/[^A-Za-z0-9]+/g,'_').replace(/^_|_$/g,'')+'_JPFY27.xlsx'; }
+function xLegend(ws,span){
+  ws.addRow([]); const r=ws.addRow(['Legend']); r.getCell(1).font=xfont({bold:true,color:{argb:XMUTE},size:10});
+  const l=ws.addRow(['Spent','Committed','Intended']);
+  ['spent','committed','intended'].forEach((s,i)=>{ const c=l.getCell(i+1);
+    c.fill={type:'pattern',pattern:'solid',fgColor:{argb:XSTYLE[s].fill}}; c.font=xfont({bold:true,color:{argb:XSTYLE[s].font},size:10}); c.alignment={horizontal:'center'}; });
+}
+
+// Category detail — line items x months, cells coloured by status
+async function exportCategoryXlsx(cat){
+  if(!xready()){ toast('Excel library offline — exporting CSV'); return exportCsv(); }
+  const wb=new ExcelJS.Workbook(); wb.creator='PBA Marketing Budget';
+  const ws=wb.addWorksheet(titlecase(cat).slice(0,31));
+  ws.columns=[{width:30},{width:11},{width:26}].concat(MONTHS.map(()=>({width:11}))).concat([{width:14}]);
+  xTitle(ws,'PointsBet Marketing Budget · '+titlecase(cat)+' · JPFY27',16);
+  const hdr=ws.addRow(['Line item','Code','Type'].concat(MONTHS).concat(['Total'])); xHeaderRow(hdr);
+  const items=catItems(cat);
+  items.forEach(it=>{
+    const r=ws.addRow([it.partner,it.code,it.type].concat(it.cells.map(c=>c[0])).concat([itemTotal(it)]));
+    r.getCell(1).font=xfont({bold:true});
+    r.getCell(2).font=xfont({size:10,color:{argb:XMUTE}});
+    r.getCell(3).font=xfont({size:10,color:{argb:XMUTE}});
+    for(let m=0;m<12;m++){ const cell=r.getCell(4+m); const st=it.cells[m][1]; cell.numFmt=XMONEY; cell.alignment={horizontal:'right'};
+      if(it.cells[m][0]){ cell.fill={type:'pattern',pattern:'solid',fgColor:{argb:XSTYLE[st].fill}}; cell.font=xfont({color:{argb:XSTYLE[st].font}}); }
+      else cell.font=xfont({color:{argb:XFAINT}}); }
+    xMoney(r.getCell(16),true);
+  });
+  const t=totalsFor(items);
+  const sub=ws.addRow(['Subtotal','',''].concat(t.months).concat([t.total]));
+  sub.eachCell(c=>{ c.font=xfont({bold:true}); c.border={top:{style:'medium',color:{argb:XLINE}}}; });
+  for(let m=0;m<12;m++){ sub.getCell(4+m).numFmt=XMONEY; sub.getCell(4+m).alignment={horizontal:'right'}; }
+  sub.getCell(16).numFmt=XMONEY; sub.getCell(16).alignment={horizontal:'right'};
+  ws.addRow([]);
+  ['spent','committed','intended'].forEach(s=>{ const r=ws.addRow([SLABEL[s],'',''].concat(Array(12).fill('')).concat([t[s]]));
+    r.getCell(1).fill={type:'pattern',pattern:'solid',fgColor:{argb:XSTYLE[s].fill}}; r.getCell(1).font=xfont({bold:true,color:{argb:XSTYLE[s].font}});
+    xMoney(r.getCell(16),true); });
+  ws.views=[{state:'frozen',xSplit:1,ySplit:3}];
+  await xSave(wb,xName(titlecase(cat))); toast(titlecase(cat)+' exported to Excel');
+}
+
+// Overview — By category table
+async function exportByCategoryXlsx(){
+  if(!xready()){ toast('Excel library offline — exporting CSV'); return exportCsv(); }
+  const wb=new ExcelJS.Workbook(); wb.creator='PBA Marketing Budget';
+  const ws=wb.addWorksheet('By category');
+  ws.columns=[{width:28},{width:15},{width:15},{width:15},{width:15}];
+  xTitle(ws,'PointsBet Marketing Budget · By category · JPFY27',5);
+  const hdr=ws.addRow(['Category','Spent','Committed','Intended','Total']); xHeaderRow(hdr);
+  const cols=CATS.filter(c=>selCats.has(c));
+  cols.forEach(cat=>{ const t=totalsFor(catItems(cat));
+    const r=ws.addRow([titlecase(cat),t.spent,t.committed,t.intended,t.total]);
+    r.getCell(1).font=xfont({bold:true});
+    [['spent',2],['committed',3],['intended',4]].forEach(([s,i])=>{ const c=r.getCell(i); c.numFmt=XMONEY; c.alignment={horizontal:'right'}; c.font=xfont({color:{argb:XSTYLE[s].font}}); });
+    xMoney(r.getCell(5),true);
+  });
+  const g=totalsFor(state.items.filter(i=>selCats.has(i.cat)));
+  const tr=ws.addRow(['Total',g.spent,g.committed,g.intended,g.total]);
+  tr.eachCell(c=>{ c.font=xfont({bold:true}); c.border={top:{style:'medium',color:{argb:XLINE}}}; });
+  for(let i=2;i<=5;i++){ tr.getCell(i).numFmt=XMONEY; tr.getCell(i).alignment={horizontal:'right'}; }
+  ws.views=[{state:'frozen',ySplit:3}];
+  await xSave(wb,xName('Overview_By_Category')); toast('By category exported to Excel');
+}
+
+// Overview — Monthly phasing table
+async function exportPhasingXlsx(){
+  if(!xready()){ toast('Excel library offline — exporting CSV'); return exportCsv(); }
+  const wb=new ExcelJS.Workbook(); wb.creator='PBA Marketing Budget';
+  const ws=wb.addWorksheet('Monthly phasing');
+  ws.columns=[{width:16}].concat(MONTHS.map(()=>({width:11}))).concat([{width:14}]);
+  xTitle(ws,'PointsBet Marketing Budget · Monthly phasing · JPFY27',14);
+  const hdr=ws.addRow(['Status'].concat(MONTHS).concat(['Total'])); xHeaderRow(hdr);
+  const g=totalsFor(state.items.filter(i=>selCats.has(i.cat)));
+  ['spent','committed','intended'].forEach(s=>{
+    const r=ws.addRow([SLABEL[s]].concat(g.mstat.map(m=>m[s])).concat([g[s]]));
+    r.getCell(1).fill={type:'pattern',pattern:'solid',fgColor:{argb:XSTYLE[s].fill}}; r.getCell(1).font=xfont({bold:true,color:{argb:XSTYLE[s].font}});
+    for(let m=0;m<12;m++){ r.getCell(2+m).numFmt=XMONEY; r.getCell(2+m).alignment={horizontal:'right'}; r.getCell(2+m).font=xfont({color:{argb:XSTYLE[s].font}}); }
+    xMoney(r.getCell(14),true);
+  });
+  const tr=ws.addRow(['Total'].concat(g.months).concat([g.total]));
+  tr.eachCell(c=>{ c.font=xfont({bold:true}); c.border={top:{style:'medium',color:{argb:XLINE}}}; });
+  for(let m=0;m<12;m++){ tr.getCell(2+m).numFmt=XMONEY; tr.getCell(2+m).alignment={horizontal:'right'}; }
+  tr.getCell(14).numFmt=XMONEY; tr.getCell(14).alignment={horizontal:'right'};
+  ws.views=[{state:'frozen',xSplit:1,ySplit:3}];
+  await xSave(wb,xName('Overview_Monthly_Phasing')); toast('Monthly phasing exported to Excel');
+}
+
+// Whole workbook (More menu) — one coloured sheet per category + overview
+async function exportXlsx(){
+  if(!xready()){ toast('Excel library offline — exporting CSV instead'); return exportCsv(); }
+  const wb=new ExcelJS.Workbook(); wb.creator='PBA Marketing Budget';
   // Overview sheet
-  const g=totalsFor(state.items);
-  const ov=[['Category','Spent','Committed','Intended','Total']];
-  CATS.forEach(cat=>{const t=totalsFor(catItems(cat)); ov.push([cat,t.spent,t.committed,t.intended,t.total]);});
-  ov.push(['TOTAL',g.spent,g.committed,g.intended,g.total]);
-  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(ov),'Overview');
-  XLSX.writeFile(wb,'PBA_Budget_JPFY27.xlsx');
-  toast('Excel exported');
+  const ov=wb.addWorksheet('Overview');
+  ov.columns=[{width:28},{width:15},{width:15},{width:15},{width:15}];
+  xTitle(ov,'PointsBet Marketing Budget · JPFY27 · By category',5);
+  const h=ov.addRow(['Category','Spent','Committed','Intended','Total']); xHeaderRow(h);
+  CATS.forEach(cat=>{ const t=totalsFor(catItems(cat)); const r=ov.addRow([titlecase(cat),t.spent,t.committed,t.intended,t.total]);
+    r.getCell(1).font=xfont({bold:true}); for(let i=2;i<=5;i++){ r.getCell(i).numFmt=XMONEY; r.getCell(i).alignment={horizontal:'right'}; } });
+  const g=totalsFor(state.items); const tr=ov.addRow(['Total',g.spent,g.committed,g.intended,g.total]);
+  tr.eachCell(c=>{ c.font=xfont({bold:true}); c.border={top:{style:'medium',color:{argb:XLINE}}}; });
+  for(let i=2;i<=5;i++){ tr.getCell(i).numFmt=XMONEY; tr.getCell(i).alignment={horizontal:'right'}; }
+  ov.views=[{state:'frozen',ySplit:3}];
+  // one sheet per category
+  CATS.forEach(cat=>{
+    const items=catItems(cat); if(!items.length) return;
+    const ws=wb.addWorksheet(titlecase(cat).slice(0,31).replace(/[\\/?*\[\]:]/g,' '));
+    ws.columns=[{width:30},{width:11}].concat(MONTHS.map(()=>({width:11}))).concat([{width:14}]);
+    xTitle(ws,titlecase(cat)+' · JPFY27',15);
+    const hd=ws.addRow(['Line item','Code'].concat(MONTHS).concat(['Total'])); xHeaderRow(hd);
+    items.forEach(it=>{ const r=ws.addRow([it.partner,it.code].concat(it.cells.map(c=>c[0])).concat([itemTotal(it)]));
+      r.getCell(1).font=xfont({bold:true}); r.getCell(2).font=xfont({size:10,color:{argb:XMUTE}});
+      for(let m=0;m<12;m++){ const cell=r.getCell(3+m); const st=it.cells[m][1]; cell.numFmt=XMONEY; cell.alignment={horizontal:'right'};
+        if(it.cells[m][0]){ cell.fill={type:'pattern',pattern:'solid',fgColor:{argb:XSTYLE[st].fill}}; cell.font=xfont({color:{argb:XSTYLE[st].font}}); }
+        else cell.font=xfont({color:{argb:XFAINT}}); }
+      xMoney(r.getCell(15),true);
+    });
+    const t=totalsFor(items); const sub=ws.addRow(['Subtotal',''].concat(t.months).concat([t.total]));
+    sub.eachCell(c=>{ c.font=xfont({bold:true}); c.border={top:{style:'medium',color:{argb:XLINE}}}; });
+    for(let m=0;m<12;m++){ sub.getCell(3+m).numFmt=XMONEY; sub.getCell(3+m).alignment={horizontal:'right'}; }
+    sub.getCell(15).numFmt=XMONEY; sub.getCell(15).alignment={horizontal:'right'};
+    ws.views=[{state:'frozen',xSplit:1,ySplit:3}];
+  });
+  await xSave(wb,xName('Full_JPFY27')); toast('Full workbook exported to Excel');
 }
 function dl(blob,name){ const u=URL.createObjectURL(blob),a=document.createElement('a');
   a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000); }
+
 
 /* ============================ MODAL / TOAST / MISC ============================ */
 function openModal(html){ const m=document.getElementById('modal'); m.innerHTML=html;
