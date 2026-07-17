@@ -140,6 +140,8 @@
   tr.allcat td{background:#EEF1F4;font-weight:700;border-top:2px solid var(--line);border-bottom:1px solid var(--line)}
   tr.allcat:hover td{background:#E6EAEF}
   td.allitem{padding-left:24px}
+  body.editmode tr[data-id] .rowlbl{cursor:pointer}
+  body.editmode tr[data-id] .rowlbl:hover .p{text-decoration:underline dotted;text-underline-offset:2px}
   .catrow{cursor:pointer}
   .catrow:hover{background:var(--line-2)!important}
   .minibar{display:inline-flex;height:8px;width:120px;border-radius:4px;overflow:hidden;background:var(--line-2);vertical-align:middle}
@@ -590,6 +592,7 @@ function renderAll(){
       td.addEventListener('touchstart',onCellTouch,{passive:true});
     });
     const sm=document.getElementById('selmode'); if(sm) sm.onclick=()=>{selectMode=!selectMode; selection.clear(); renderAll();};
+    c.querySelectorAll('tr[data-id] .rowlbl').forEach(l=>{ const tr=l.closest('tr[data-id]'); l.onclick=()=>editItemMeta(tr.dataset.id); });
     paintSel();
   }
 }
@@ -804,7 +807,8 @@ function renderCategory(cat){
     }
     h+='<td class="tot">'+fmt(tot)+'</td>'
       +'<td><span class="rowact">'
-      + (mode==='edit'?'<button class="iconbtn sm" data-rowtag="'+it.id+'" title="Tag whole row">◧</button>'
+      + (mode==='edit'?'<button class="iconbtn sm" data-edit="'+it.id+'" title="Rename / edit code">✎</button>'
+        +'<button class="iconbtn sm" data-rowtag="'+it.id+'" title="Tag whole row">◧</button>'
         +'<button class="iconbtn sm" data-del="'+it.id+'" title="Delete line">✕</button>':'')
       +'</span></td></tr>';
   });
@@ -829,7 +833,9 @@ function renderCategory(cat){
     });
     c.querySelectorAll('th.month').forEach(th=>{th.style.cursor='pointer'; th.onclick=()=>bulkColumn(cat,+th.dataset.mi);});
     c.querySelectorAll('[data-rowtag]').forEach(b=>b.onclick=()=>bulkRow(b.dataset.rowtag));
+    c.querySelectorAll('[data-edit]').forEach(b=>b.onclick=e=>{ e.stopPropagation(); editItemMeta(b.dataset.edit); });
     c.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>delItem(b.dataset.del));
+    c.querySelectorAll('tr[data-id] .rowlbl').forEach(l=>{ const tr=l.closest('tr[data-id]'); l.onclick=()=>editItemMeta(tr.dataset.id); });
     const add=document.getElementById('additem'); if(add) add.onclick=()=>addItem(cat);
     const sm=document.getElementById('selmode'); if(sm) sm.onclick=()=>{selectMode=!selectMode; selection.clear(); renderCategory(cat);};
     paintSel();
@@ -970,6 +976,21 @@ function addItem(cat){
       cells:Array.from({length:12},()=>[0,'intended'])});
     save(); closeModal(); render(); toast('Line item added');
   };
+}
+function editItemMeta(id){
+  const it=state.items.find(i=>i.id===id); if(!it) return;
+  openModal('<h3>Edit line item</h3><p>Rename this line, change its billing code or type. Amounts and statuses stay as they are.</p>'
+    +'<label>Partner / description</label><input id="ep" value="'+esc(it.partner)+'">'
+    +'<label>Billing code</label><input id="ec" value="'+esc(it.code)+'">'
+    +'<label>Type (optional)</label><input id="et" value="'+esc(it.type||'')+'">'
+    +'<div class="actions"><button class="btn" data-close>Cancel</button>'
+    +'<button class="btn primary" id="emsave">Save changes</button></div>');
+  document.getElementById('emsave').onclick=()=>{
+    const p=document.getElementById('ep').value.trim(); if(!p){ toast('Enter a name'); return; }
+    it.partner=p; it.code=document.getElementById('ec').value.trim()||'—'; it.type=document.getElementById('et').value.trim();
+    save(); closeModal(); render(); toast('Line item updated');
+  };
+  document.getElementById('ep').focus(); document.getElementById('ep').select();
 }
 function delItem(id){
   const it=state.items.find(i=>i.id===id);
